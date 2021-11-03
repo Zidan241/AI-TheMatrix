@@ -1,9 +1,17 @@
-import java.io.Console;
 import java.util.Arrays;
 import java.util.Random;
 public class Matrix extends GenericSearch {
-    
-     
+    public Matrix(String[] operators, String initialState){
+        super(operators, initialState);
+    }
+    public boolean GoalTest(String currentState){
+
+        return true;
+    }
+    public int PathCost(String[] actions){
+
+        return 1;
+    }
     public static String genGrid(){
 
         Random rand= new Random();
@@ -113,7 +121,6 @@ public class Matrix extends GenericSearch {
             if(i!=Hostages-1)
                 Grid+=",";
         }
-        System.out.println(Grid);
         return Grid;
     }
     public static String solve(){
@@ -122,7 +129,7 @@ public class Matrix extends GenericSearch {
     public static void ViewGrid(String Grid){
         String[] GridSplit=Grid.split(";");
         String[] GridSize=GridSplit[0].split(",");
-        String[] NeoCarry=GridSplit[1].split(",");
+        //String[] NeoCarry=GridSplit[1].split(",");
         String[][] GridView=new String[Integer.parseInt(GridSize[0])][Integer.parseInt(GridSize[1])];
         String[] Neo=GridSplit[2].split(",");
         String[] Telephone=GridSplit[3].split(",");
@@ -130,20 +137,20 @@ public class Matrix extends GenericSearch {
 
         GridView[Integer.parseInt(Neo[0])][Integer.parseInt(Neo[1])]="N    ";
         String[] Agents=GridSplit[4].split(",");
-        for(var i=0;i<Agents.length-1;i+=2){
+        for(int i=0;i<Agents.length-1;i+=2){
             GridView[Integer.parseInt(Agents[i])][Integer.parseInt(Agents[i+1])]="A   ";
         }
         String[] Pills=GridSplit[5].split(",");
-        for(var i=0;i<Pills.length-1;i+=2){
+        for(int i=0;i<Pills.length-1;i+=2){
             GridView[Integer.parseInt(Pills[i])][Integer.parseInt(Pills[i+1])]="P    ";
         }
         String[] Pads=GridSplit[6].split(",");
-        for(var i=0;i<Pads.length-3;i+=4){
+        for(int i=0;i<Pads.length-3;i+=4){
             GridView[Integer.parseInt(Pads[i])][Integer.parseInt(Pads[i+1])]="SP"+((i/4)+1)+"  ";
             GridView[Integer.parseInt(Pads[i+2])][Integer.parseInt(Pads[i+3])]="FP"+((i/4)+1)+"  ";
         }
         String[] Hostages=GridSplit[7].split(",");
-        for(var i=0;i<Hostages.length-2;i+=3){
+        for(int i=0;i<Hostages.length-2;i+=3){
             GridView[Integer.parseInt(Hostages[i])][Integer.parseInt(Hostages[i+1])]="H"+((i/3)+1)+"-"+Hostages[i+2];
         }
         System.out.println(Hostages.length);
@@ -153,7 +160,9 @@ public class Matrix extends GenericSearch {
     }
 
     public static void main(String[] args) throws Exception {
-        String grid=genGrid();
+        String grid = genGrid();
+        //String[] operators = {"left","right","up","down"};
+        //Matrix m = new Matrix(operators, grid);
         ViewGrid(grid);
     }
 }
