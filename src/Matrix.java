@@ -1,16 +1,38 @@
 import java.util.Arrays;
 import java.util.Random;
+
 public class Matrix extends GenericSearch {
-    public Matrix(String[] operators, String initialState){
+    public Matrix(String[] operators, State initialState){
         super(operators, initialState);
     }
-    public boolean GoalTest(String currentState){
-
-        return true;
+    public boolean GoalTest(State currentState){
+        if(currentState.neoLocationX==currentState.telephoneBoothX && currentState.neoLocationY==currentState.telephoneBoothY){
+            for(int i = 0 ; i<currentState.hostageDamage.length;i++){
+                if(currentState.hostageDamage[i]!=100 && 
+                currentState.hostageLocationX[i]!=currentState.telephoneBoothX && 
+                currentState.hostageLocationY[i]!=currentState.telephoneBoothY){
+                    return false;
+                }
+            }
+            return true;
+        }
+        else{
+            return false;
+        }
     }
-    public int PathCost(String[] actions){
+    public int PathCost(State state, String operator){
 
         return 1;
+    }
+    public State ApplyOperator(State state, String operator){
+        State newState = new State(state.n,state.m,state.c,state.telephoneBoothX,state.telephoneBoothY,state.neoLocationX,state.neoLocationY,state.hostageLocationX,state.hostageLocationY,state.hostageDamage,state.pillLocationX,state.pillLocationY,state.startPadLocationX,state.startPadLocationY,state.finishPadLocationX,state.finishPadLocationY);
+        //TODO: implement ApplyOperator (check if it is even possible else return null)
+        switch(operator){
+
+        }
+
+
+        return newState;
     }
     public static String genGrid(){
 
@@ -145,32 +167,9 @@ public class Matrix extends GenericSearch {
         System.out.println("Neo x,y:" + NeoX+" "+NeoY);
         System.out.println("Telephone x,y:" + telephoneX+" "+telephoneY);
         System.out.println("agent size, pill size, hostagesSize" + agentSize+" "+pillSize+" "+hostagesSize);
-        switch (strategy){
-            case "BF":
-            break;
-            case "DF":
-            break;
-            case "ID":
-            break;
-            case "UC":
-            break;
-            default:
-            if(strategy.substring(0,2)=="GR"){
-            
-
-            }
-            else {
-                if (strategy.substring(0,2)=="AS"){
-
-                }
-            }
-            break;          
-        }
-
-
-
-
-
+        // String grid = genGrid();
+        // String[] operators = {"left","right","up","down"};
+        // Matrix m = new Matrix(operators, grid);
 
         return "";
     }
