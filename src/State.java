@@ -9,24 +9,26 @@ public class State {
     int neoLocationX;
     int neoLocationY;
     int neoDamage=0;
-    int[] hostageLocationX;
-    int[] hostageLocationY;
-    boolean[] hostageCarried; 
+    ArrayList<Integer>  hostageLocationX;
+    ArrayList<Integer>  hostageLocationY;
+    ArrayList<Boolean>  hostageCarried; 
     int currentCarried=0;
-    int[] hostageDamage;
-    int[] pillLocationX;
-    int[] pillLocationY;
+    int hostagesSaved=0;
+    int hostagesDead=0;
+    ArrayList<Integer> hostageDamage;
+    ArrayList<Integer> pillLocationX;
+    ArrayList<Integer>  pillLocationY;
     int[] startPadLocationX;
     int[] startPadLocationY;
     int[] finishPadLocationX;
     int[] finishPadLocationY;
-    int[] agentsLocationX;
-    int[] agentsLocationY;
-    public State(int n,int m,int c,int telephoneBoothX,int telephoneBoothY,int neoLocationX,int neoLocationY,int[] hostageLocationX,int[] hostageLocationY,int[] hostageDamage,int[] pillLocationX,int[] pillLocationY,int[] startPadLocationX,int[] startPadLocationY,int[] finishPadLocationX,int[] finishPadLocationY,int[] agentsLocationX,int[] agentsLocationY){
+    ArrayList<Integer> agentsLocationX;
+    ArrayList<Integer>  agentsLocationY;
+    public State(int n,int m,int c,int telephoneBoothX,int telephoneBoothY,int neoLocationX,int neoLocationY,    ArrayList<Integer>  hostageLocationX,    ArrayList<Integer>  hostageLocationY,    ArrayList<Integer>  hostageDamage,    ArrayList<Integer>  pillLocationX,    ArrayList<Integer>  pillLocationY,int[] startPadLocationX,int[] startPadLocationY,int[] finishPadLocationX,int[] finishPadLocationY,    ArrayList<Integer> agentsLocationX,    ArrayList<Integer> agentsLocationY){
         this.n=n;
         this.m=m;
         this.c=c;
-        this.hostageCarried = new boolean[hostageLocationX.length];; 
+        this.hostageCarried = new ArrayList<Boolean>(hostageLocationX.size());
         this.telephoneBoothX=telephoneBoothX;
         this.telephoneBoothY=telephoneBoothY;
         this.neoLocationX=neoLocationX;
@@ -54,28 +56,28 @@ public class State {
         s+="neoLocationX="+neoLocationX+"\n";
         s+="neoLocationY="+neoLocationY+"\n";
         s+="hostageLocationX=";
-        for(int i=0;i<hostageLocationX.length;i++){
-            s+=hostageLocationX[i]+" ";
+        for(int i=0;i<hostageLocationX.size();i++){
+            s+=hostageLocationX.get(i)+" ";
         }
         s+="\n";
         s+="hostageLocationY=";
-        for(int i=0;i<hostageLocationY.length;i++){
-            s+=hostageLocationY[i]+" ";
+        for(int i=0;i<hostageLocationY.size();i++){
+            s+=hostageLocationY.get(i)+" ";
         }
         s+="\n";
         s+="hostageDamage=";
-        for(int i=0;i<hostageDamage.length;i++){
-            s+=hostageDamage[i]+" ";
+        for(int i=0;i<hostageDamage.size();i++){
+            s+=hostageDamage.get(i)+" ";
         }
         s+="\n";
         s+="pillLocationX=";
-        for(int i=0;i<pillLocationX.length;i++){
-            s+=pillLocationX[i]+" ";
+        for(int i=0;i<pillLocationX.size();i++){
+            s+=pillLocationX.get(i)+" ";
         }
         s+="\n";
         s+="pillLocationY=";
-        for(int i=0;i<pillLocationY.length;i++){
-            s+=pillLocationY[i]+" ";
+        for(int i=0;i<pillLocationY.size();i++){
+            s+=pillLocationY.get(i)+" ";
         }
         s+="\n";
         s+="startPadLocationX=";
@@ -99,15 +101,145 @@ public class State {
         }
         s+="\n";
         s+="agentsLocationX=";
-        for(int i=0;i<agentsLocationX.length;i++){
-            s+=agentsLocationX[i]+" ";
+        for(int i=0;i<agentsLocationX.size();i++){
+            s+=agentsLocationX.get(i)+" ";
         }
         s+="\n";
         s+="agentsLocationY=";
-        for(int i=0;i<agentsLocationY.length;i++){
-            s+=agentsLocationY[i]+" ";
+        for(int i=0;i<agentsLocationY.size();i++){
+            s+=agentsLocationY.get(i)+" ";
         }
         s+="\n";
         return s;
     }
+public  boolean MoveUp (){
+
+    if(  neoLocationX+1<n){
+    neoLocationX++;
+    for(int i=0; i<hostageDamage.size();i++){
+        hostageDamage.set(i, hostageDamage.get(i)+2);
+    }
+    return true;
+    }
+    else {
+        return false;
+    }
+}
+
+public  boolean MoveDown (){
+
+    if(  neoLocationX-1<n){
+    neoLocationX--;
+    for(int i=0; i<hostageDamage.size();i++){
+        hostageDamage.set(i, hostageDamage.get(i)+2);
+    }
+    return true;
+    }
+    else {
+        return false;
+    }
+}
+
+public  boolean MoveLeft (){
+    if(  neoLocationY-1<n){
+    neoLocationY--;
+    for(int i=0; i<hostageDamage.size();i++){
+        hostageDamage.set(i, hostageDamage.get(i)+2);
+    }
+    return true;
+    }
+    else {
+        return false;
+    }
+}
+
+public  boolean MoveRight (){
+    if(  neoLocationY+1<n){
+    neoLocationY++;
+    for(int i=0; i<hostageDamage.size();i++){
+        hostageDamage.set(i, hostageDamage.get(i)+2);
+    }
+    return true;
+    }
+    else {
+        return false;
+    }
+}
+
+public  boolean carry (){
+    for(int i=0; i<hostageDamage.size();i++){
+        hostageDamage.set(i, hostageDamage.get(i)+2);
+    }
+    for (int i = 0; i < hostageLocationX.size(); i++) {
+        if (neoLocationX == hostageLocationX.get(i)&& neoLocationY == hostageLocationY.get(i) && c>currentCarried) {
+           hostageCarried.set(i,true);
+          currentCarried++;
+          return true;
+        }
+    }
+        return false;
+
+}
+
+public  boolean drop(){
+    for(int i=0; i<hostageDamage.size();i++){
+        hostageDamage.set(i, hostageDamage.get(i)+2);
+    }
+    boolean dropped= false;
+    if(neoLocationX==telephoneBoothX && neoLocationY==telephoneBoothY &&currentCarried>0 ){
+        for (int i = 0; i < hostageLocationX.size(); i++) {
+            if (hostageCarried.get(i)==true) {
+                hostagesSaved++;
+                currentCarried--;
+                hostageLocationX.remove(i);
+                hostageLocationY.remove(i);
+                hostageCarried.remove(i);
+                hostageDamage.remove(i);
+                dropped=true;
+
+            }
+        }
+    }
+    if(!dropped){
+        return false;
+    }
+    else {
+        return true;
+    }
+     
+
+}
+
+public  boolean fly(){
+    for(int i=0; i<hostageDamage.size();i++){
+        hostageDamage.set(i, hostageDamage.get(i)+2);
+    }
+    for(int i=0; i<startPadLocationX.length;i++){
+        if(neoLocationX==startPadLocationX[i] && neoLocationY==startPadLocationX[i]){
+           neoLocationX=finishPadLocationX[i];
+            neoLocationY=finishPadLocationY[i];
+        return true;
+        }
+    }
+
+        return true;
+      
+
+}
+
+
+// public  boolean takePill(){
+
+
+// }
+// public  boolean kill(){
+
+
+// }
+
+
+
+
+
+
 }

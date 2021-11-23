@@ -1,6 +1,6 @@
 import java.util.Arrays;
 import java.util.Random;
-
+import java.util.ArrayList;
 public class Matrix extends GenericSearch {
     public Matrix(String[] operators, State initialState) {
         super(operators, initialState);
@@ -9,10 +9,10 @@ public class Matrix extends GenericSearch {
     public boolean GoalTest(State currentState) {
         if (currentState.neoLocationX == currentState.telephoneBoothX
                 && currentState.neoLocationY == currentState.telephoneBoothY) {
-            for (int i = 0; i < currentState.hostageDamage.length; i++) {
-                if (currentState.hostageDamage[i] != 100
-                        && currentState.hostageLocationX[i] != currentState.telephoneBoothX
-                        && currentState.hostageLocationY[i] != currentState.telephoneBoothY) {
+            for (int i = 0; i < currentState.hostageDamage.size(); i++) {
+                if (currentState.hostageDamage.get(i) != 100
+                        && currentState.hostageLocationX.get(i) != currentState.telephoneBoothX
+                        && currentState.hostageLocationY.get(i) != currentState.telephoneBoothY) {
                     return false;
                 }
             }
@@ -35,25 +35,55 @@ public class Matrix extends GenericSearch {
         // TODO: implement ApplyOperator (check if it is even possible else return null)
         switch (operator) {
             case "up":
-                newState.neoLocationY = newState.neoLocationY - 1;
-                break;
+             if( newState.MoveUp()){
+                 return newState;
+             }
+             else{
+                 return null;
+             }
             case "down":
-                newState.neoLocationY = newState.neoLocationY + 1;
-                break;
+            if( newState.MoveDown()){
+                return newState;
+            }
+            else{
+                return null;
+            }
             case "left":
-                newState.neoLocationX = newState.neoLocationX - 1;
-                break;
+            if( newState.MoveLeft()){
+                return newState;
+            }
+            else{
+                return null;
+            }
             case "right":
-                newState.neoLocationX = newState.neoLocationX + 1;
-                break;
+            if( newState.MoveRight()){
+                return newState;
+            }
+            else{
+                return null;
+            }
             case "carry":
-                for (int i = 0; i < newState.hostageLocationX.length; i++) {
-                    if (newState.neoLocationX == newState.hostageLocationX[i]&& newState.neoLocationY == newState.hostageLocationY[i]) {
-                        newState.hostageCarried[i] = true;
-                        newState.currentCarried++;
-                    }
-                }
-                break;
+            if( newState.carry()){
+                return newState;
+            }
+            else{
+                return null;
+            }
+            case "drop":
+            if( newState.drop()){
+                return newState;
+            }
+            else{
+                return null;
+            }
+
+            case "fly":
+            if( newState.fly()){
+                return newState;
+            }
+            else{
+                return null;
+            }
         }
 
         return newState;
@@ -230,24 +260,26 @@ public class Matrix extends GenericSearch {
         String[] pad2D = GridSplit[6].split(",");
         int hostagesSize= ((GridSplit[7].split(",")).length)/3;
         String[] hostages2D = GridSplit[7].split(",");
-        int[] hostagesX=new int[hostagesSize];
-        int[] hostagesY=new int[hostagesSize];
-        int[] hostagesDamage=new int[hostagesSize];
+        ArrayList<Integer> hostagesX= new  ArrayList<Integer> (hostagesSize);
+        ArrayList<Integer> hostagesY= new  ArrayList<Integer> (hostagesSize);
+        ArrayList<Integer> hostagesDamage= new  ArrayList<Integer> (hostagesSize);
         for(int i=0;i<hostages2D.length;i+=3){
-            hostagesX[i/3]=Integer.parseInt(hostages2D[i]);
-            hostagesY[i/3]=Integer.parseInt(hostages2D[i+1]);
-            hostagesDamage[i/3]=Integer.parseInt(hostages2D[i+2]);      
+            hostagesX.add(i/3,Integer.parseInt(hostages2D[i]));
+            hostagesY.add(i/3,Integer.parseInt(hostages2D[i+1]));
+            hostagesDamage.add(i/3,Integer.parseInt(hostages2D[i+2]));    
         }
-        int[] pillsX=new int[pillSize];
-        int[] pillsY=new int[pillSize];
+
+        ArrayList<Integer> pillsX= new  ArrayList<Integer> (pillSize);
+        ArrayList<Integer> pillsY= new  ArrayList<Integer> (pillSize); 
         for(int i=0;i<pill2D.length;i+=2){
-            pillsX[i/2]=Integer.parseInt(pill2D[i]);
-            pillsY[i/2]=Integer.parseInt(pill2D[i+1]);
+            pillsX.add(i/2,Integer.parseInt(pill2D[i]));
+            pillsY.add(i/2,Integer.parseInt(pill2D[i+1]));
         }
         int[] startPadsX=new int[padSize*2];
         int[] startPadsY=new int[padSize*2];
         int[] finishPadsX=new int[padSize*2];
         int[] finishPadsY=new int[padSize*2];
+
         for(int i =0;i<pad2D.length;i+=4){
             startPadsX[i/4]=Integer.parseInt(pad2D[i]);
             startPadsY[i/4]=Integer.parseInt(pad2D[i+1]);
@@ -260,11 +292,12 @@ public class Matrix extends GenericSearch {
             startPadsX[i/4]=Integer.parseInt(pad2D[i/4+2]);
             startPadsY[i/4]=Integer.parseInt(pad2D[i/4+3]);
         }
-        int[] agentsX=new int[agentSize];
-        int[] agentsY=new int[agentSize];
+
+        ArrayList<Integer> agentsX =new  ArrayList<Integer> (agentSize); 
+        ArrayList<Integer> agentsY =new  ArrayList<Integer> (agentSize); 
         for(int i=0;i<agent2D.length;i+=2){
-            agentsX[i/2]=Integer.parseInt(agent2D[i]);
-            agentsY[i/2]=Integer.parseInt(agent2D[i+1]);
+            agentsX.add(i/2,Integer.parseInt(agent2D[i]));
+            agentsY.add(i/2,Integer.parseInt(agent2D[i+1]));
         }        //initializing problem 
     
         State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,hostagesX,hostagesY,hostagesDamage,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY);
