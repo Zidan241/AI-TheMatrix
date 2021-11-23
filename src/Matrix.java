@@ -123,7 +123,55 @@ public class Matrix extends GenericSearch {
         }
         return Grid;
     }
-    public static String solve(){
+    public static String solve(String grid, String strategy, boolean visualize){
+        String[] GridSplit=grid.split(";");
+        // String[] length = GridSplit[0].split(",");
+        int m =Integer.parseInt((GridSplit[0].split(","))[0]);
+        int n =Integer.parseInt(GridSplit[0].split(",")[1]);
+        int c = Integer.parseInt(GridSplit[1]);
+        int NeoX= Integer.parseInt(GridSplit[2].split(",")[0]);
+        int NeoY = Integer.parseInt(GridSplit[2].split(",")[1]);
+        int telephoneX= Integer.parseInt(GridSplit[3].split(",")[0]);
+        int telephoneY =Integer.parseInt(GridSplit[3].split(",")[1]);
+        int agentSize= ((GridSplit[4].split(",")).length)/2;
+        String agent2D = GridSplit[4];
+        int pillSize= ((GridSplit[5].split(",")).length)/2;
+        String pill2D = GridSplit[5];
+        int padSize= ((GridSplit[6].split(",")).length)/4;
+        String pad2D = GridSplit[6];
+        int hostagesSize= ((GridSplit[7].split(",")).length)/3;
+        String hostages2D = GridSplit[7];
+        System.out.println("M,N, c : "+ m+" "+n+" "+c);
+        System.out.println("Neo x,y:" + NeoX+" "+NeoY);
+        System.out.println("Telephone x,y:" + telephoneX+" "+telephoneY);
+        System.out.println("agent size, pill size, hostagesSize" + agentSize+" "+pillSize+" "+hostagesSize);
+        switch (strategy){
+            case "BF":
+            break;
+            case "DF":
+            break;
+            case "ID":
+            break;
+            case "UC":
+            break;
+            default:
+            if(strategy.substring(0,2)=="GR"){
+            
+
+            }
+            else {
+                if (strategy.substring(0,2)=="AS"){
+
+                }
+            }
+            break;          
+        }
+
+
+
+
+
+
         return "";
     }
     public static void ViewGrid(String Grid){
@@ -160,9 +208,10 @@ public class Matrix extends GenericSearch {
     }
 
     public static void main(String[] args) throws Exception {
-        String grid = genGrid();
-        //String[] operators = {"left","right","up","down"};
-        //Matrix m = new Matrix(operators, grid);
-        ViewGrid(grid);
+        // String grid = genGrid();
+        // String[] operators = {"left","right","up","down"};
+        // Matrix m = new Matrix(operators, grid);
+        // ViewGrid(grid);
+        solve("5,5;2;0,4;1,4;0,1,1,1,2,1,3,1,3,3,3,4;1,0,2,4;0,3,4,3,4,3,0,3;0,0,30,3,0,80,4,4,80", "BF", true);
     }
 }
