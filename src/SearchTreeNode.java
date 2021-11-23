@@ -11,4 +11,7 @@ public class SearchTreeNode {
         this.depth = depth;
         this.pathCost = pathCost;
     }
+    public String toString(){
+        return "State: " + state.toString() + " Operator: " + operator + " Depth: " + depth + " PathCost: " + pathCost;
+    }
 }

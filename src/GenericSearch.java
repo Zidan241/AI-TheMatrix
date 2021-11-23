@@ -61,6 +61,9 @@ public abstract class GenericSearch {
         }
     }
     public static void BFS(LinkedList<SearchTreeNode> queue , ArrayList<SearchTreeNode> nodes){
-
+        for(int i =0;i<nodes.size();i++){
+            queue.addLast(nodes.get(i));
+            System.out.println(nodes.get(i));
+        }
     }
 }
