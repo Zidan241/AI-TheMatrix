@@ -27,6 +27,7 @@ public class State {
     ArrayList<Integer>  agentsLocationY;
     int agentsKilled;
 
+    //Constructor
     public State(int n,int m,int c,
     int telephoneBoothX,
     int telephoneBoothY,

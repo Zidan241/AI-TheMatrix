@@ -10,25 +10,8 @@ public class Matrix extends GenericSearch {
     }
 
     public boolean GoalTest(State currentState) {
-        //We reach a goal state if there are no more alive hostages yet to save or neo dies
-
-        /*if(currentState.neoDamage==100){
-            return true;
-        }
-        if (currentState.neoLocationX == currentState.telephoneBoothX
-                && currentState.neoLocationY == currentState.telephoneBoothY) {
-            for (int i = 0; i < currentState.hostageDamage.size(); i++) {
-                if (currentState.hostageDamage.get(i) != 100
-                        && currentState.hostageLocationX.get(i) != currentState.telephoneBoothX
-                        && currentState.hostageLocationY.get(i) != currentState.telephoneBoothY) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }*/
-        if(currentState.hostagesSaved==2){
+        //We reach a goal state if there are no more alive hostages to save
+        if(currentState.hostageLocationX.isEmpty() && currentState.hostagesDead==0){
             return true;
         }
         else{
@@ -57,8 +40,8 @@ public class Matrix extends GenericSearch {
     }
 
     public State ApplyOperator(State state, String operator) {
-        //if neo dies he cannot do any operation
-        if(state.neoDamage==100){
+        //if neo dies he cannot do any operation or there is no one else left to save, because we know that this state is NOT a goal state
+        if(state.neoDamage==100 || (state.hostageLocationX.isEmpty())){
             return null;
         }
 
@@ -394,7 +377,7 @@ public class Matrix extends GenericSearch {
         State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,0,hostagesX,hostagesY,hostagesDamage,hostagesCarried,0,0,0,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY,0);
         String[] operators={"carry", "drop", "takePill", "up", "down", "left", "right", "fly", "kill"};
         Matrix problem = new Matrix(operators,initialState);
-        SearchTreeNode solution = GenericSearchProcedure(problem, "BF");
+        SearchTreeNode solution = GenericSearchProcedure(problem, strategy);
         if(solution == null){
             return "No Solution";
         }
