@@ -114,6 +114,9 @@ public class test {
         System.out.println(a);
         System.out.println(b);
 
+        String s = "Hello";
+        System.out.println(s.split(",")[0]);
+
     }
     
 }
