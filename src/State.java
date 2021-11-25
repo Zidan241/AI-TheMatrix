@@ -112,120 +112,117 @@ public class State {
         s+="\n";
         return s;
     }
-public  boolean MoveUp (){
 
-    if(  neoLocationX+1<n){
-    neoLocationX++;
-    for(int i=0; i<hostageDamage.size();i++){
-        hostageDamage.set(i, hostageDamage.get(i)+2);
-    }
-    return true;
-    }
-    else {
-        return false;
-    }
-}
+    public  boolean MoveUp (){
 
-public  boolean MoveDown (){
+        if(  neoLocationX+1<n){
+        neoLocationX++;
+        for(int i=0; i<hostageDamage.size();i++){
+            hostageDamage.set(i, hostageDamage.get(i)+2);
+        }
+        return true;
+        }
+        else {
+            return false;
+        }
+        }
 
-    if(  neoLocationX-1<n){
-    neoLocationX--;
-    for(int i=0; i<hostageDamage.size();i++){
-        hostageDamage.set(i, hostageDamage.get(i)+2);
-    }
-    return true;
-    }
-    else {
-        return false;
-    }
-}
+        public  boolean MoveDown (){
 
-public  boolean MoveLeft (){
-    if(  neoLocationY-1<n){
-    neoLocationY--;
-    for(int i=0; i<hostageDamage.size();i++){
-        hostageDamage.set(i, hostageDamage.get(i)+2);
-    }
-    return true;
-    }
-    else {
-        return false;
-    }
-}
-
-public  boolean MoveRight (){
-    if(  neoLocationY+1<n){
-    neoLocationY++;
-    for(int i=0; i<hostageDamage.size();i++){
-        hostageDamage.set(i, hostageDamage.get(i)+2);
-    }
-    return true;
-    }
-    else {
-        return false;
-    }
-}
-
-public  boolean carry (){
-    for(int i=0; i<hostageDamage.size();i++){
-        hostageDamage.set(i, hostageDamage.get(i)+2);
-    }
-    for (int i = 0; i < hostageLocationX.size(); i++) {
-        if (neoLocationX == hostageLocationX.get(i)&& neoLocationY == hostageLocationY.get(i) && c>currentCarried) {
-           hostageCarried.set(i,true);
-          currentCarried++;
-          return true;
+        if(  neoLocationX-1<n){
+        neoLocationX--;
+        for(int i=0; i<hostageDamage.size();i++){
+            hostageDamage.set(i, hostageDamage.get(i)+2);
+        }
+        return true;
+        }
+        else {
+            return false;
         }
     }
-        return false;
 
-}
-
-public  boolean drop(){
-    for(int i=0; i<hostageDamage.size();i++){
-        hostageDamage.set(i, hostageDamage.get(i)+2);
+    public  boolean MoveLeft (){
+        if(  neoLocationY-1<n){
+        neoLocationY--;
+        for(int i=0; i<hostageDamage.size();i++){
+            hostageDamage.set(i, hostageDamage.get(i)+2);
+        }
+        return true;
+        }
+        else {
+            return false;
+        }
     }
-    boolean dropped= false;
-    if(neoLocationX==telephoneBoothX && neoLocationY==telephoneBoothY &&currentCarried>0 ){
-        for (int i = 0; i < hostageLocationX.size(); i++) {
-            if (hostageCarried.get(i)==true) {
-                hostagesSaved++;
-                currentCarried--;
-                hostageLocationX.remove(i);
-                hostageLocationY.remove(i);
-                hostageCarried.remove(i);
-                hostageDamage.remove(i);
-                dropped=true;
 
+    public  boolean MoveRight (){
+        if(  neoLocationY+1<n){
+        neoLocationY++;
+        for(int i=0; i<hostageDamage.size();i++){
+            hostageDamage.set(i, hostageDamage.get(i)+2);
+        }
+        return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public  boolean carry (){
+        for(int i=0; i<hostageDamage.size();i++){
+            hostageDamage.set(i, hostageDamage.get(i)+2);
+        }
+        for (int i = 0; i < hostageLocationX.size(); i++) {
+            if (neoLocationX == hostageLocationX.get(i)&& neoLocationY == hostageLocationY.get(i) && c>currentCarried) {
+            hostageCarried.set(i,true);
+            currentCarried++;
+            return true;
             }
         }
-    }
-    if(!dropped){
-        return false;
-    }
-    else {
-        return true;
-    }
-     
+            return false;
 
-}
-
-public  boolean fly(){
-    for(int i=0; i<hostageDamage.size();i++){
-        hostageDamage.set(i, hostageDamage.get(i)+2);
     }
-    for(int i=0; i<startPadLocationX.length;i++){
-        if(neoLocationX==startPadLocationX[i] && neoLocationY==startPadLocationX[i]){
-           neoLocationX=finishPadLocationX[i];
-            neoLocationY=finishPadLocationY[i];
-        return true;
+
+    public  boolean drop(){
+        for(int i=0; i<hostageDamage.size();i++){
+            hostageDamage.set(i, hostageDamage.get(i)+2);
+        }
+        boolean dropped= false;
+        if(neoLocationX==telephoneBoothX && neoLocationY==telephoneBoothY &&currentCarried>0 ){
+            for (int i = 0; i < hostageLocationX.size(); i++) {
+                if (hostageCarried.get(i)==true) {
+                    hostagesSaved++;
+                    currentCarried--;
+                    hostageLocationX.remove(i);
+                    hostageLocationY.remove(i);
+                    hostageCarried.remove(i);
+                    hostageDamage.remove(i);
+                    dropped=true;
+
+                }
+            }
+        }
+        if(!dropped){
+            return false;
+        }
+        else {
+            return true;
         }
     }
 
-        return true;
-      
+    public  boolean fly(){
+        for(int i=0; i<hostageDamage.size();i++){
+            hostageDamage.set(i, hostageDamage.get(i)+2);
+        }
+        for(int i=0; i<startPadLocationX.length;i++){
+            if(neoLocationX==startPadLocationX[i] && neoLocationY==startPadLocationX[i]){
+            neoLocationX=finishPadLocationX[i];
+                neoLocationY=finishPadLocationY[i];
+            return true;
+            }
+        }
 
-}
+            return true;
+    }
 
 
 // public  boolean takePill(){
