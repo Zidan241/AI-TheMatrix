@@ -356,17 +356,24 @@ public class State {
 
         //loop over agents arraylist and check if neo is adjacent 
         //to an an agent then kill it and remove it from the arraylist and decrease neo's damage by 20
+
+        boolean killed=false;
+
+        //kill all agents in adjacent cells
         for(int i=0;i<agentsLocationX.size();i++){
             if(isAgentAdjacent(agentsLocationX.get(i),agentsLocationY.get(i))){
                 agentsLocationX.remove(i);
                 agentsLocationY.remove(i);
-                neoDamage-=20;
-                if(neoDamage<=0)
-                    gameOver=true;
-                return true;
+                agentsKilled++;
             }
         }
-        return false;
+        //if neo kills an agent(s) then increase neo's damage by 20
+        if(killed){
+            neoDamage+=20;
+            if(neoDamage>100)
+                neoDamage=100;
+        }
+        return killed;
     }
     public boolean isAgentAdjacent(int agentX,int agentY){
         if(neoLocationX==agentX && neoLocationY==agentY+1){

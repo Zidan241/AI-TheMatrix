@@ -1,6 +1,8 @@
 package code;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
+import java.io.Console;
 import java.util.ArrayList;
 public class Matrix extends GenericSearch {
     public Matrix(String[] operators, State initialState) {
@@ -28,9 +30,24 @@ public class Matrix extends GenericSearch {
         }
     }
 
-    public int PathCost(State state, String operator) {
+    public int PathCost(State state, State nextState) {
 
-        return 1;
+        //IMPORTANT NOTE:
+        //note that we will prioritize deaths then kills then number of actions
+        //therefore cost of deaths > cost of kills > cost of actions
+
+        //we will add the cose to go from state to nextState, were state represents the parent's state
+
+        //we will add one for each step taken
+        int stepCost = 1;
+
+        //for each agent taken we will increase the cost by 5
+        stepCost += (nextState.agentsKilled - state.agentsKilled) * 5;
+
+        //for each hostage death we will increase the cost by 20
+        stepCost += (nextState.hostagesDead - state.hostagesDead) * 20;
+
+        return stepCost;
     }
 
     public State ApplyOperator(State state, String operator) {
@@ -241,34 +258,51 @@ public class Matrix extends GenericSearch {
         String[] GridSplit = Grid.split(";");
         String[] GridSize = GridSplit[0].split(",");
         //String[] NeoCarry=GridSplit[1].split(",");
-        String[][] GridView = new String[Integer.parseInt(GridSize[0])][Integer.parseInt(GridSize[1])];
+        int rows=Integer.parseInt(GridSize[0]);
+        int cols=Integer.parseInt(GridSize[1]);
+        String[][] GridView = new String[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                GridView[i][j] = " - ";
+            }
+        }
         String[] Neo = GridSplit[2].split(",");
         String[] Telephone = GridSplit[3].split(",");
-        GridView[Integer.parseInt(Telephone[0])][Integer.parseInt(Telephone[1])] = "T    ";
+        GridView[Integer.parseInt(Telephone[0])][Integer.parseInt(Telephone[1])] = "TB";
 
-        GridView[Integer.parseInt(Neo[0])][Integer.parseInt(Neo[1])] = "N    ";
+        GridView[Integer.parseInt(Neo[0])][Integer.parseInt(Neo[1])] = "N";
         String[] Agents = GridSplit[4].split(",");
         for (int i = 0; i < Agents.length - 1; i += 2) {
-            GridView[Integer.parseInt(Agents[i])][Integer.parseInt(Agents[i + 1])] = "A   ";
+            GridView[Integer.parseInt(Agents[i])][Integer.parseInt(Agents[i + 1])] = "A";
         }
         String[] Pills = GridSplit[5].split(",");
         for (int i = 0; i < Pills.length - 1; i += 2) {
-            GridView[Integer.parseInt(Pills[i])][Integer.parseInt(Pills[i + 1])] = "P    ";
+            GridView[Integer.parseInt(Pills[i])][Integer.parseInt(Pills[i + 1])] = "P";
         }
         String[] Pads = GridSplit[6].split(",");
         for (int i = 0; i < Pads.length - 3; i += 4) {
-            GridView[Integer.parseInt(Pads[i])][Integer.parseInt(Pads[i + 1])] = "SP" + ((i / 4) + 1) + "  ";
-            GridView[Integer.parseInt(Pads[i + 2])][Integer.parseInt(Pads[i + 3])] = "FP" + ((i / 4) + 1) + "  ";
+            GridView[Integer.parseInt(Pads[i])][Integer.parseInt(Pads[i + 1])] = "SP-" + ((i / 4) + 1);
+            GridView[Integer.parseInt(Pads[i + 2])][Integer.parseInt(Pads[i + 3])] = "FP-" + ((i / 4) + 1);
         }
         String[] Hostages = GridSplit[7].split(",");
         for (int i = 0; i < Hostages.length - 2; i += 3) {
-            GridView[Integer.parseInt(Hostages[i])][Integer.parseInt(Hostages[i + 1])] = "H" + ((i / 3) + 1) + "-"
-                    + Hostages[i + 2];
+            GridView[Integer.parseInt(Hostages[i])][Integer.parseInt(Hostages[i + 1])] = "H " +  "("+ Hostages[i + 2]+")";
         }
-        System.out.println(Hostages.length);
-        for (int i = 0; i < GridView.length; i++) {
-            System.out.println(Arrays.toString(GridView[i]));
+
+        String leftAlignFormat = "| ";
+        String line="+";
+        for (int i = 0; i < cols; i++) {
+            leftAlignFormat += " %-15s |";
+            line += "-----------------+";
         }
+        line+="\n";
+        leftAlignFormat += "%n";
+
+        for (int i = 0 ; i < rows ; i++) {
+            System.out.format(line);
+            System.out.format(leftAlignFormat, GridView[i]);
+        }
+        System.out.format(line);
     }
 
     public static String solve(String grid, String strategy, boolean visualize){
@@ -294,7 +328,8 @@ public class Matrix extends GenericSearch {
         ArrayList<Integer> hostagesX= new  ArrayList<Integer> (hostagesSize);
         ArrayList<Integer> hostagesY= new  ArrayList<Integer> (hostagesSize);
         ArrayList<Integer> hostagesDamage= new  ArrayList<Integer> (hostagesSize);
-        ArrayList<Boolean> hostagesCarried= new  ArrayList<Boolean> (hostagesSize);
+        ArrayList<Boolean> hostagesCarried= new  ArrayList<Boolean> (Arrays.asList(new Boolean[hostagesSize]));
+        Collections.fill(hostagesCarried, false);
         for(int i=0;i<hostages2D.length;i+=3){
             hostagesX.add(i/3,Integer.parseInt(hostages2D[i]));
             hostagesY.add(i/3,Integer.parseInt(hostages2D[i+1]));
@@ -327,13 +362,12 @@ public class Matrix extends GenericSearch {
 
         ArrayList<Integer> agentsX =new  ArrayList<Integer> (agentSize); 
         ArrayList<Integer> agentsY =new  ArrayList<Integer> (agentSize);
-        int agentsKilled = 0; 
         for(int i=0;i<agent2D.length;i+=2){
             agentsX.add(i/2,Integer.parseInt(agent2D[i]));
             agentsY.add(i/2,Integer.parseInt(agent2D[i+1]));
         }        
         //initializing problem 
-        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,NeoDamage,hostagesX,hostagesY,hostagesDamage,hostagesCarried,0,0,0,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY,agentsKilled);
+        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,NeoDamage,hostagesX,hostagesY,hostagesDamage,hostagesCarried,0,0,0,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY,0);
         String[] operators={"up", "down", "left", "right", "carry","drop", "takePill", "kill","fly"};
         Matrix problem = new Matrix(operators,initialState);
         SearchTreeNode solution = GenericSearchProcedure(problem, "BF");
@@ -344,12 +378,19 @@ public class Matrix extends GenericSearch {
             String solutionString = "";
             String plan = "";
             SearchTreeNode tempNode=solution;
-            while(tempNode!=null){
-                plan+=tempNode.operator;
-                if(tempNode.parentNode!=null){
-                    plan+=",";
+            while(true){
+                if(tempNode.operator!=null){
+                    plan+=tempNode.operator;
                 }
-                tempNode=tempNode.parentNode;
+                if(tempNode.parentNode==null){
+                    break;
+                }
+                else{
+                    if(tempNode.parentNode.operator!=null){
+                        plan+=",";
+                    }
+                    tempNode=tempNode.parentNode;
+                }
             }
             solutionString+=plan;
             solutionString+=";";
@@ -362,11 +403,11 @@ public class Matrix extends GenericSearch {
         }
     }
     public static void main(String[] args) throws Exception {
-        // String grid = genGrid();
-        // String[] operators = {"left","right","up","down"};
-        // Matrix m = new Matrix(operators, grid);
-        // ViewGrid(grid);
-        solve("5,5;2;0,4;1,4;0,1,1,1,2,1,3,1,3,3,3,4;1,0,2,4;0,3,4,3,4,3,0,3;0,0,30,3,0,80,4,4,80", "BF", true);
+        String grid = "5,5;2;0,4;1,4;0,1,1,1,2,1,3,1,3,3,3,4;1,0,2,4;0,3,4,3,4,3,0,3;0,0,30,3,0,80,4,4,80";
+        ViewGrid(grid);
+        String BFSSol = solve(grid, "BF", true);
+        System.out.print("Solution: ");
+        System.out.println(BFSSol);
 
     }
 }
