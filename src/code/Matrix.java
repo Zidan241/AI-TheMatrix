@@ -28,7 +28,7 @@ public class Matrix extends GenericSearch {
         } else {
             return false;
         }*/
-        if(currentState.hostageDamage.size()==0){
+        if(currentState.hostagesSaved==2){
             return true;
         }
         else{
@@ -296,7 +296,7 @@ public class Matrix extends GenericSearch {
 
         GridView[Grid.telephoneBoothX][Grid.telephoneBoothY] += "TB-";
 
-        GridView[Grid.neoLocationX][Grid.neoLocationY] += "N-";
+        GridView[Grid.neoLocationX][Grid.neoLocationY] += "N"+"("+Grid.neoDamage+")-";
         for (int i = 0 ; i < Grid.agentsLocationX.size() ; i++) {
             GridView[Grid.agentsLocationX.get(i)][Grid.agentsLocationY.get(i)] += "A-";
         }
@@ -317,8 +317,8 @@ public class Matrix extends GenericSearch {
         String leftAlignFormat = "| ";
         String line="+";
         for (int i = 0 ; i < Grid.n ; i++) {
-            leftAlignFormat += " %-15s |";
-            line += "-----------------+";
+            leftAlignFormat += " %-25s |";
+            line += "---------------------------+";
         }
         line+="\n";
         leftAlignFormat += "%n";
@@ -392,7 +392,7 @@ public class Matrix extends GenericSearch {
         }        
         //initializing problem 
         State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,0,hostagesX,hostagesY,hostagesDamage,hostagesCarried,0,0,0,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY,0);
-        String[] operators={"up", "down", "left", "right", "carry","drop", "takePill", "kill","fly"};
+        String[] operators={"carry", "drop", "takePill", "up", "down", "left", "right", "fly", "kill"};
         Matrix problem = new Matrix(operators,initialState);
         SearchTreeNode solution = GenericSearchProcedure(problem, "BF");
         if(solution == null){
@@ -437,7 +437,7 @@ public class Matrix extends GenericSearch {
     }
     
     public static void main(String[] args) throws Exception {
-        String grid = "5,5;2;3,4;1,2;0,3,1,4;2,3;4,4,0,2,0,2,4,4;2,2,88,2,4,62";
+        String grid = "5,5;1;1,4;1,0;0,4;0,0,2,2;3,4,4,2,4,2,3,4;0,2,32,0,1,38";
         String BFSSol = solve(grid, "BF", true);
         System.out.print("Solution: ");
         System.out.println(BFSSol);

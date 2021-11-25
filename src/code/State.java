@@ -287,17 +287,23 @@ public class State {
 
     public boolean drop(){
         boolean dropped= false;
+        ArrayList<Integer> hostagesToBeRemovedIndexes = new ArrayList<Integer>();
         if(neoLocationX==telephoneBoothX && neoLocationY==telephoneBoothY && currentCarried>0 ){
             for (int i = 0; i < hostageLocationX.size(); i++) {
                 if (hostageCarried.get(i)==true) {
-                    hostagesSaved++;
+                    if(hostageDamage.get(i)<100){
+                        hostagesSaved++;
+                    }
                     currentCarried--;
-                    hostageLocationX.remove(i);
-                    hostageLocationY.remove(i);
-                    hostageCarried.remove(i);
-                    hostageDamage.remove(i);
+                    hostagesToBeRemovedIndexes.add(i);
                     dropped=true;
                 }
+            }
+            for(int i=0;i<hostagesToBeRemovedIndexes.size();i++){
+                hostageDamage.remove(hostagesToBeRemovedIndexes.get(i)-i);
+                hostageCarried.remove(hostagesToBeRemovedIndexes.get(i)-i);
+                hostageLocationX.remove(hostagesToBeRemovedIndexes.get(i)-i);
+                hostageLocationY.remove(hostagesToBeRemovedIndexes.get(i)-i);
             }
         }
         return dropped;
@@ -362,12 +368,16 @@ public class State {
         boolean killed=false;
 
         //kill all agents in adjacent cells
+        ArrayList<Integer> agentsToBeRemovedIndexes = new ArrayList<Integer>();
         for(int i=0;i<agentsLocationX.size();i++){
             if(isAgentAdjacent(agentsLocationX.get(i),agentsLocationY.get(i))){
-                agentsLocationX.remove(i);
-                agentsLocationY.remove(i);
                 agentsKilled++;
+                agentsToBeRemovedIndexes.add(i);
             }
+        }
+        for(int i=0;i<agentsToBeRemovedIndexes.size();i++){
+            agentsLocationX.remove(agentsToBeRemovedIndexes.get(i)-i);
+            agentsLocationY.remove(agentsToBeRemovedIndexes.get(i)-i);
         }
         //if neo kills an agent(s) then increase neo's damage by 20
         if(killed){
@@ -398,6 +408,7 @@ public class State {
     
     public void Step(){
         //increase hostage damage by 2
+        ArrayList<Integer> hostagesToBeRemovedIndexes = new ArrayList<Integer>();
         for(int i =0;i<hostageDamage.size();i++){
             //only increase damage if hostage is not dead
             int hostDam = hostageDamage.get(i);
@@ -413,11 +424,17 @@ public class State {
             //convert hostage to agent if damage is equal to or greater than 100 and is not carried by neo
             if(hostDam>=100){
                 if(hostageCarried.get(i)==false){
-                    hostageDamage.remove(i);
-                    agentsLocationX.add(hostageLocationX.remove(i));
-                    agentsLocationY.add(hostageLocationY.remove(i));
+                    agentsLocationX.add(hostageLocationX.get(i));
+                    agentsLocationY.add(hostageLocationY.get(i));
+                    hostagesToBeRemovedIndexes.add(i);
                 }
             }
+        }
+        for(int i=0;i<hostagesToBeRemovedIndexes.size();i++){
+            hostageLocationX.remove(hostagesToBeRemovedIndexes.get(i)-i);
+            hostageLocationY.remove(hostagesToBeRemovedIndexes.get(i)-i);
+            hostageDamage.remove(hostagesToBeRemovedIndexes.get(i)-i);
+            hostageCarried.remove(hostagesToBeRemovedIndexes.get(i)-i);
         }
     }
 
