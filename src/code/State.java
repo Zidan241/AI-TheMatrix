@@ -79,7 +79,7 @@ public class State {
     }
     
     public String toString(){
-        String s="";
+        String s="\n";
         s+="n="+n+"\n";
         s+="m="+m+"\n";
         s+="c="+c+"\n";
@@ -308,6 +308,13 @@ public class State {
             if(neoLocationX==startPadLocationX[i] && neoLocationY==startPadLocationX[i]){
                 neoLocationX=finishPadLocationX[i];
                 neoLocationY=finishPadLocationY[i];
+                //updating the carried hostages location
+                for(int j=0;j<hostageLocationX.size();j++){
+                    if(hostageCarried.get(j)==true){
+                        hostageLocationX.set(j,finishPadLocationX[i]);
+                        hostageLocationY.set(j,finishPadLocationY[i]);
+                    }
+                }
                 return true;
             }
         }
