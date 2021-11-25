@@ -26,7 +26,6 @@ public class State {
     ArrayList<Integer> agentsLocationX;
     ArrayList<Integer>  agentsLocationY;
     int agentsKilled;
-    boolean gameOver;
 
     public State(int n,int m,int c,
     int telephoneBoothX,
@@ -51,6 +50,8 @@ public class State {
     ArrayList<Integer> agentsLocationY,
     int agentsKilled
     ) {
+        //m is the columns (width)
+        //n is the rows (height)
         this.n=n;
         this.m=m;
         this.c=c;
@@ -150,7 +151,39 @@ public class State {
         //making sure there are no hostages in the new location that were never carried by neo before that have damage
         //of 98 or higher since they are going to become agents in the next step
         for(int i=0;i<hostageLocationX.size();i++){
-            if(hostageLocationX.get(i)==(neoLocationX+1) && hostageLocationY.get(i)==neoLocationY && hostageDamage.get(i)>=98 && hostageCarried.get(i)==false){
+            if(hostageLocationX.get(i)==(neoLocationX-1) && hostageLocationY.get(i)==neoLocationY && hostageDamage.get(i)>=98){
+                return false;
+            }
+        }
+        //making sure there are no agents in the new location
+        for(int i=0;i<agentsLocationX.size();i++){
+            if(agentsLocationX.get(i)==(neoLocationX-1) && agentsLocationY.get(i)==neoLocationY){
+                return false;
+            }
+        }
+
+        //making sure new location is in the grid
+        if((neoLocationX-1)>=0){
+            neoLocationX--;
+            //updating the carried hostages location
+            for(int i=0;i<hostageLocationX.size();i++){
+                if(hostageCarried.get(i)==true){
+                    hostageLocationX.set(i,neoLocationX);
+                }
+            }
+            return true;
+        }
+        else {
+            return false;
+        }
+        }
+
+    public boolean MoveDown (){
+
+        //making sure there are no hostages in the new location that were never carried by neo before that have damage
+        //of 98 or higher since they are going to become agents in the next step
+        for(int i=0;i<hostageLocationX.size();i++){
+            if(hostageLocationX.get(i)==(neoLocationX+1) && hostageLocationY.get(i)==neoLocationY && hostageDamage.get(i)>=98){
                 return false;
             }
         }
@@ -170,38 +203,6 @@ public class State {
                     hostageLocationX.set(i,neoLocationX);
                 }
             }
-            return true;
-        }
-        else {
-            return false;
-        }
-        }
-
-    public boolean MoveDown (){
-
-        //making sure there are no hostages in the new location that were never carried by neo before that have damage
-        //of 98 or higher since they are going to become agents in the next step
-        for(int i=0;i<hostageLocationX.size();i++){
-            if(hostageLocationX.get(i)==(neoLocationX-1) && hostageLocationY.get(i)==neoLocationY && hostageDamage.get(i)>=98 && hostageCarried.get(i)==false){
-                return false;
-            }
-        }
-        //making sure there are no agents in the new location
-        for(int i=0;i<agentsLocationX.size();i++){
-            if(agentsLocationX.get(i)==(neoLocationX-1) && agentsLocationY.get(i)==neoLocationY){
-                return false;
-            }
-        }
-
-        //making sure new location is in the grid
-        if(neoLocationX-1<n){
-            neoLocationX--;
-            //updating the carried hostages location
-            for(int i=0;i<hostageLocationX.size();i++){
-                if(hostageCarried.get(i)==true){
-                    hostageLocationX.set(i,neoLocationX);
-                }
-            }
         return true;
         }
         else {
@@ -214,7 +215,7 @@ public class State {
         //making sure there are no hostages in the new location that were never carried by neo before that have damage
         //of 98 or higher since they are going to become agents in the next step
         for(int i=0;i<hostageLocationX.size();i++){
-            if(hostageLocationX.get(i)==neoLocationX && hostageLocationY.get(i)==(neoLocationY-1) && hostageDamage.get(i)>=98 && hostageCarried.get(i)==false){
+            if(hostageLocationX.get(i)==neoLocationX && hostageLocationY.get(i)==(neoLocationY-1) && hostageDamage.get(i)>=98){
                 return false;
             }
         }
@@ -226,7 +227,7 @@ public class State {
         }
 
         //making sure new location is in the grid
-        if(neoLocationY-1<n){
+        if(neoLocationY-1>=0){
             neoLocationY--;
             //updating the carried hostages location
             for(int i=0;i<hostageLocationX.size();i++){
@@ -246,7 +247,7 @@ public class State {
         //making sure there are no hostages in the new location that were never carried by neo before that have damage
         //of 98 or higher since they are going to become agents in the next step
         for(int i=0;i<hostageLocationX.size();i++){
-            if(hostageLocationX.get(i)==neoLocationX && hostageLocationY.get(i)==(neoLocationY+1) && hostageDamage.get(i)>=98 && hostageCarried.get(i)==false){
+            if(hostageLocationX.get(i)==neoLocationX && hostageLocationY.get(i)==(neoLocationY+1) && hostageDamage.get(i)>=98){
                 return false;
             }
         }
@@ -258,7 +259,7 @@ public class State {
         }
 
         //making sure new location is in the grid
-        if(neoLocationY+1<n){
+        if(neoLocationY+1<m){
             neoLocationY++;
             //updating the carried hostages location
             for(int i=0;i<hostageLocationX.size();i++){
@@ -299,12 +300,7 @@ public class State {
                 }
             }
         }
-        if(!dropped){
-            return false;
-        }
-        else {
-            return true;
-        }
+        return dropped;
     }
 
     public boolean fly(){
@@ -315,9 +311,8 @@ public class State {
                 return true;
             }
         }
-        return true;
+        return false;
     }
-
 
     public boolean takePill(){
         //loop over pills arraylist and check if neo is at the same location as a pill then take it and remove it from the arraylist
@@ -349,7 +344,7 @@ public class State {
         //check if there is no alive hostage in the same location as neo
         //note that this check happens before increasing the hostage damage by 2
         for(int i=0;i<hostageLocationX.size();i++){
-            if(hostageLocationX.get(i)==neoLocationX && hostageLocationY.get(i)==neoLocationY && hostageDamage.get(i)<100){
+            if(hostageLocationX.get(i)==neoLocationX && hostageLocationY.get(i)==neoLocationY && hostageCarried.get(i)==false){
                 return false;
             }
         }
@@ -375,6 +370,7 @@ public class State {
         }
         return killed;
     }
+    
     public boolean isAgentAdjacent(int agentX,int agentY){
         if(neoLocationX==agentX && neoLocationY==agentY+1){
             return true;
@@ -410,11 +406,9 @@ public class State {
             //convert hostage to agent if damage is equal to or greater than 100 and is not carried by neo
             if(hostDam>=100){
                 if(hostageCarried.get(i)==false){
-                    int x = hostageLocationX.remove(i);
-                    int y = hostageLocationY.remove(i);
                     hostageDamage.remove(i);
-                    agentsLocationX.add(x);
-                    agentsLocationY.add(y);
+                    agentsLocationX.add(hostageLocationX.remove(i));
+                    agentsLocationY.add(hostageLocationY.remove(i));
                 }
             }
         }

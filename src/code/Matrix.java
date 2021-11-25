@@ -2,8 +2,8 @@ package code;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
-import java.io.Console;
 import java.util.ArrayList;
+
 public class Matrix extends GenericSearch {
     public Matrix(String[] operators, State initialState) {
         super(operators, initialState);
@@ -51,89 +51,109 @@ public class Matrix extends GenericSearch {
     }
 
     public State ApplyOperator(State state, String operator) {
-        State newState = new State(state.n, state.m, state.c, state.telephoneBoothX, state.telephoneBoothY,
-                state.neoLocationX, state.neoLocationY,state.neoDamage, state.hostageLocationX, state.hostageLocationY,
-                state.hostageDamage,state.hostageCarried,state.currentCarried,state.hostagesSaved,state.hostagesDead, state.pillLocationX, state.pillLocationY, state.startPadLocationX,
-                state.startPadLocationY, state.finishPadLocationX, state.finishPadLocationY, state.agentsLocationX,state.agentsLocationY, state.agentsKilled);
+        State newState = new State(
+            state.n, 
+            state.m, 
+            state.c, 
+            state.telephoneBoothX, 
+            state.telephoneBoothY,
+            state.neoLocationX,
+            state.neoLocationY,
+            state.neoDamage, 
+            state.hostageLocationX, 
+            state.hostageLocationY,
+            state.hostageDamage,
+            state.hostageCarried,
+            state.currentCarried,
+            state.hostagesSaved,
+            state.hostagesDead,
+            state.pillLocationX,
+            state.pillLocationY,
+            state.startPadLocationX,
+            state.startPadLocationY, 
+            state.finishPadLocationX,
+            state.finishPadLocationY,
+            state.agentsLocationX,
+            state.agentsLocationY,
+            state.agentsKilled);
 
-
+        //System.out.println("Applying operator: " + operator);
         //we first update the state according to the operator before we increase all hostages damage by 2
         //because for example if we are in the same cell as a hostage with damage of 99 and we preform a kill operation
         //this would be an illegal action therefore we make sure that the action is valid first then we incresase all hostages damage by 2
         //we will increase all hostages damage by 2 in all operation execpt the take pill one, as we will decrease all hostages damage by 20
         switch (operator) {
             case "up":
-             if( newState.MoveUp() ){
-                 newState.Step();
-                 return newState;
-             }
-             else{
-                 return null;
-             }
+                if( newState.MoveUp() ){
+                    newState.Step();
+                    return newState;
+                }
+                else{
+                    return null;
+                }
             case "down":
-            if( newState.MoveDown() ){
-                newState.Step();
-                return newState;
-            }
-            else{
-                return null;
-            }
+                if( newState.MoveDown() ){
+                    newState.Step();
+                    return newState;
+                }
+                else{
+                    return null;
+                }
             case "left":
-            if( newState.MoveLeft() ){
-                newState.Step();
-                return newState;
-            }
-            else{
-                return null;
-            }
+                if( newState.MoveLeft() ){
+                    newState.Step();
+                    return newState;
+                }
+                else{
+                    return null;
+                }
             case "right":
-            if( newState.MoveRight() ){
-                newState.Step();
-                return newState;
-            }
-            else{
-                return null;
-            }
+                if( newState.MoveRight() ){
+                    newState.Step();
+                    return newState;
+                }
+                else{
+                    return null;
+                }
             case "carry":
-            if( newState.carry()){
-                newState.Step();
-                return newState;
-            }
-            else{
-                return null;
-            }
+                if( newState.carry()){
+                    newState.Step();
+                    return newState;
+                }
+                else{
+                    return null;
+                }
             case "drop":
             if( newState.drop()){
-                newState.Step();
-                return newState;
-            }
-            else{
-                return null;
-            }
-
+                    newState.Step();
+                    return newState;
+                }
+                else{
+                    return null;
+                }
             case "fly":
-            if( newState.fly()){
-                newState.Step();
-                return newState;
-            }
-            else{
-                return null;
-            }
+                if( newState.fly()){
+                    newState.Step();
+                    return newState;
+                }
+                else{
+                    return null;
+                }
             case "takePill":
-            if( newState.takePill()){
-                return newState;
-            }
-            else{
-                return null;
-            }
+                if( newState.takePill()){
+                    return newState;
+                }
+                else{
+                    return null;
+                }
             case "kill":
-            if( newState.kill()){
-                newState.Step();
-                return newState;
-            }
-            else{
-                return null;
-            }
+                if( newState.kill()){
+                    newState.Step();
+                    return newState;
+                }
+                else{
+                    return null;
+                }
         }
         return newState;
     }
@@ -258,8 +278,8 @@ public class Matrix extends GenericSearch {
         String[] GridSplit = Grid.split(";");
         String[] GridSize = GridSplit[0].split(",");
         //String[] NeoCarry=GridSplit[1].split(",");
-        int rows=Integer.parseInt(GridSize[0]);
-        int cols=Integer.parseInt(GridSize[1]);
+        int cols=Integer.parseInt(GridSize[0]);
+        int rows=Integer.parseInt(GridSize[1]);
         String[][] GridView = new String[rows][cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -281,8 +301,8 @@ public class Matrix extends GenericSearch {
         }
         String[] Pads = GridSplit[6].split(",");
         for (int i = 0; i < Pads.length - 3; i += 4) {
-            GridView[Integer.parseInt(Pads[i])][Integer.parseInt(Pads[i + 1])] = "SP-" + ((i / 4) + 1);
-            GridView[Integer.parseInt(Pads[i + 2])][Integer.parseInt(Pads[i + 3])] = "FP-" + ((i / 4) + 1);
+            GridView[Integer.parseInt(Pads[i])][Integer.parseInt(Pads[i + 1])] = "P-" + ((i / 4) + 1);
+            GridView[Integer.parseInt(Pads[i + 2])][Integer.parseInt(Pads[i + 3])] = "P-" + ((i / 4) + 1);
         }
         String[] Hostages = GridSplit[7].split(",");
         for (int i = 0; i < Hostages.length - 2; i += 3) {
@@ -314,7 +334,7 @@ public class Matrix extends GenericSearch {
         int c = Integer.parseInt(GridSplit[1]);
         int NeoX= Integer.parseInt(GridSplit[2].split(",")[0]);
         int NeoY = Integer.parseInt(GridSplit[2].split(",")[1]);
-        int NeoDamage=0;
+        System.out.println("NeoX: "+NeoX+" NeoY: "+NeoY);
         int telephoneX= Integer.parseInt(GridSplit[3].split(",")[0]);
         int telephoneY =Integer.parseInt(GridSplit[3].split(",")[1]);
         int agentSize= ((GridSplit[4].split(",")).length)/2;
@@ -367,7 +387,7 @@ public class Matrix extends GenericSearch {
             agentsY.add(i/2,Integer.parseInt(agent2D[i+1]));
         }        
         //initializing problem 
-        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,NeoDamage,hostagesX,hostagesY,hostagesDamage,hostagesCarried,0,0,0,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY,0);
+        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,0,hostagesX,hostagesY,hostagesDamage,hostagesCarried,0,0,0,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY,0);
         String[] operators={"up", "down", "left", "right", "carry","drop", "takePill", "kill","fly"};
         Matrix problem = new Matrix(operators,initialState);
         SearchTreeNode solution = GenericSearchProcedure(problem, "BF");
@@ -378,18 +398,17 @@ public class Matrix extends GenericSearch {
             String solutionString = "";
             String plan = "";
             SearchTreeNode tempNode=solution;
-            while(true){
-                if(tempNode.operator!=null){
-                    plan+=tempNode.operator;
-                }
-                if(tempNode.parentNode==null){
-                    break;
-                }
-                else{
-                    if(tempNode.parentNode.operator!=null){
-                        plan+=",";
+            plan += tempNode.operator;
+            if(tempNode.parentNode!=null){
+                tempNode=tempNode.parentNode;
+                while(true){
+                    if(tempNode.parentNode==null){
+                        break;
                     }
-                    tempNode=tempNode.parentNode;
+                    else{
+                        plan=tempNode.operator+","+plan;
+                        tempNode=tempNode.parentNode;
+                    }
                 }
             }
             solutionString+=plan;
@@ -403,7 +422,7 @@ public class Matrix extends GenericSearch {
         }
     }
     public static void main(String[] args) throws Exception {
-        String grid = "5,5;2;0,4;1,4;0,1,1,1,2,1,3,1,3,3,3,4;1,0,2,4;0,3,4,3,4,3,0,3;0,0,30,3,0,80,4,4,80";
+        String grid = "5,5;2;3,4;1,2;0,3,1,4;2,3;4,4,0,2,0,2,4,4;2,2,91,2,4,62";
         ViewGrid(grid);
         String BFSSol = solve(grid, "BF", true);
         System.out.print("Solution: ");
