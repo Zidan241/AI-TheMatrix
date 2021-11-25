@@ -8,15 +8,14 @@ public class State {
     int telephoneBoothY;
     int neoLocationX;
     int neoLocationY;
-    int neoDamage=0;
+    int neoDamage;
     ArrayList<Integer>  hostageLocationX;
     ArrayList<Integer>  hostageLocationY;
+    ArrayList<Integer>  hostageDamage;
     ArrayList<Boolean>  hostageCarried; 
-    ArrayList<Boolean>  hostageCarriedBefore;
-    int currentCarried=0;
-    int hostagesSaved=0;
-    int hostagesDead=0;
-    ArrayList<Integer> hostageDamage;
+    int currentCarried;
+    int hostagesSaved;
+    int hostagesDead;
     ArrayList<Integer> pillLocationX;
     ArrayList<Integer>  pillLocationY;
     int[] startPadLocationX;
@@ -25,16 +24,21 @@ public class State {
     int[] finishPadLocationY;
     ArrayList<Integer> agentsLocationX;
     ArrayList<Integer>  agentsLocationY;
+
+
     public State(int n,int m,int c,
     int telephoneBoothX,
     int telephoneBoothY,
     int neoLocationX,
-    int neoLocationY,    
+    int neoLocationY,
+    int neoDamage,   
     ArrayList<Integer>  hostageLocationX,    
     ArrayList<Integer>  hostageLocationY,    
     ArrayList<Integer>  hostageDamage,
     ArrayList<Boolean>  hostageCarried,
-    ArrayList<Boolean>  hostageCarriedBefore,    
+    int currentCarried,
+    int hostagesSaved,
+    int hostagesDead,
     ArrayList<Integer>  pillLocationX,    
     ArrayList<Integer>  pillLocationY,
     int[] startPadLocationX,
@@ -42,11 +46,12 @@ public class State {
     int[] finishPadLocationX,
     int[] finishPadLocationY,    
     ArrayList<Integer> agentsLocationX,    
-    ArrayList<Integer> agentsLocationY){
+    ArrayList<Integer> agentsLocationY
+    ) {
         this.n=n;
         this.m=m;
         this.c=c;
-        this.hostageCarried = new ArrayList<Boolean>(hostageLocationX.size());
+        this.hostageCarried = hostageCarried;
         this.telephoneBoothX=telephoneBoothX;
         this.telephoneBoothY=telephoneBoothY;
         this.neoLocationX=neoLocationX;
@@ -54,7 +59,6 @@ public class State {
         this.hostageLocationX=hostageLocationX;
         this.hostageLocationY=hostageLocationY;
         this.hostageDamage=hostageDamage;
-        this.hostageCarriedBefore=hostageCarriedBefore;
         this.hostageCarried=hostageCarried;
         this.pillLocationX=pillLocationX;
         this.pillLocationY=pillLocationY;
@@ -65,6 +69,7 @@ public class State {
         this.agentsLocationX=agentsLocationX;
         this.agentsLocationY=agentsLocationY;
     }
+    
     public String toString(){
         String s="";
         s+="n="+n+"\n";
@@ -133,24 +138,63 @@ public class State {
         return s;
     }
 
-    public  boolean MoveUp (){
+    public boolean MoveUp (){
 
-        if(  neoLocationX+1<n){
-        neoLocationX++;
-        for(int i=0; i<hostageDamage.size();i++){
-            hostageDamage.set(i, hostageDamage.get(i)+2);
+        //making sure there are no hostages in the new location that were never carried by neo before that have damage
+        //of 98 or higher since they are going to become agents in the next step
+        for(int i=0;i<hostageLocationX.size();i++){
+            if(hostageLocationX.get(i)==(neoLocationX+1) && hostageLocationY.get(i)==neoLocationY && hostageDamage.get(i)>=98 && hostageCarriedBefore.get(i)==false){
+                return false;
+            }
         }
-        return true;
+        //making sure there are no agents in the new location
+        for(int i=0;i<agentsLocationX.size();i++){
+            if(agentsLocationX.get(i)==(neoLocationX+1) && agentsLocationY.get(i)==neoLocationY){
+                return false;
+            }
+        }
+
+        //making sure new location is in the grid
+        if(neoLocationX+1<n){
+            neoLocationX++;
+            //updating the carried hostages location
+            for(int i=0;i<hostageLocationX.size();i++){
+                if(hostageCarried.get(i)==true){
+                    hostageLocationX.set(i,neoLocationX);
+                }
+            }
+            return true;
         }
         else {
             return false;
         }
         }
 
-    public  boolean MoveDown (){
+    public boolean MoveDown (){
 
-        if(  neoLocationX-1<n){
-        neoLocationX--;
+        //making sure there are no hostages in the new location that were never carried by neo before that have damage
+        //of 98 or higher since they are going to become agents in the next step
+        for(int i=0;i<hostageLocationX.size();i++){
+            if(hostageLocationX.get(i)==(neoLocationX-1) && hostageLocationY.get(i)==neoLocationY && hostageDamage.get(i)>=98 && hostageCarriedBefore.get(i)==false){
+                return false;
+            }
+        }
+        //making sure there are no agents in the new location
+        for(int i=0;i<agentsLocationX.size();i++){
+            if(agentsLocationX.get(i)==(neoLocationX-1) && agentsLocationY.get(i)==neoLocationY){
+                return false;
+            }
+        }
+
+        //making sure new location is in the grid
+        if(neoLocationX-1<n){
+            neoLocationX--;
+            //updating the carried hostages location
+            for(int i=0;i<hostageLocationX.size();i++){
+                if(hostageCarried.get(i)==true){
+                    hostageLocationX.set(i,neoLocationX);
+                }
+            }
         return true;
         }
         else {
@@ -158,42 +202,84 @@ public class State {
         }
     }
 
-    public  boolean MoveLeft (){
-        if(  neoLocationY-1<n){
-        neoLocationY--;
-        return true;
+    public boolean MoveLeft (){
+
+        //making sure there are no hostages in the new location that were never carried by neo before that have damage
+        //of 98 or higher since they are going to become agents in the next step
+        for(int i=0;i<hostageLocationX.size();i++){
+            if(hostageLocationX.get(i)==neoLocationX && hostageLocationY.get(i)==(neoLocationY-1) && hostageDamage.get(i)>=98 && hostageCarriedBefore.get(i)==false){
+                return false;
+            }
+        }
+        //making sure there are no agents in the new location
+        for(int i=0;i<agentsLocationX.size();i++){
+            if(agentsLocationX.get(i)==neoLocationX && agentsLocationY.get(i)==(neoLocationY-1)){
+                return false;
+            }
+        }
+
+        //making sure new location is in the grid
+        if(neoLocationY-1<n){
+            neoLocationY--;
+            //updating the carried hostages location
+            for(int i=0;i<hostageLocationX.size();i++){
+                if(hostageCarried.get(i)==true){
+                    hostageLocationY.set(i,neoLocationY);
+                }
+            }
+            return true;
         }
         else {
             return false;
         }
     }
 
-    public  boolean MoveRight (){
-        if(  neoLocationY+1<n){
-        neoLocationY++;
-        return true;
+    public boolean MoveRight (){
+
+        //making sure there are no hostages in the new location that were never carried by neo before that have damage
+        //of 98 or higher since they are going to become agents in the next step
+        for(int i=0;i<hostageLocationX.size();i++){
+            if(hostageLocationX.get(i)==neoLocationX && hostageLocationY.get(i)==(neoLocationY+1) && hostageDamage.get(i)>=98 && hostageCarriedBefore.get(i)==false){
+                return false;
+            }
+        }
+        //making sure there are no agents in the new location
+        for(int i=0;i<agentsLocationX.size();i++){
+            if(agentsLocationX.get(i)==neoLocationX && agentsLocationY.get(i)==(neoLocationY+1)){
+                return false;
+            }
+        }
+
+        //making sure new location is in the grid
+        if(neoLocationY+1<n){
+            neoLocationY++;
+            //updating the carried hostages location
+            for(int i=0;i<hostageLocationX.size();i++){
+                if(hostageCarried.get(i)==true){
+                    hostageLocationY.set(i,neoLocationY);
+                }
+            }
+            return true;
         }
         else {
             return false;
         }
     }
 
-    public  boolean carry (){
+    public boolean carry (){
         for (int i = 0; i < hostageLocationX.size(); i++) {
             if (neoLocationX == hostageLocationX.get(i)&& neoLocationY == hostageLocationY.get(i) && c>currentCarried) {
-            hostageCarried.set(i,true);
-            hostageCarriedBefore.set(i,true);
-            currentCarried++;
-            return true;
+                hostageCarried.set(i,true);
+                currentCarried++;
+                return true;
             }
         }
             return false;
-
     }
 
-    public  boolean drop(){
+    public boolean drop(){
         boolean dropped= false;
-        if(neoLocationX==telephoneBoothX && neoLocationY==telephoneBoothY &&currentCarried>0 ){
+        if(neoLocationX==telephoneBoothX && neoLocationY==telephoneBoothY && currentCarried>0 ){
             for (int i = 0; i < hostageLocationX.size(); i++) {
                 if (hostageCarried.get(i)==true) {
                     hostagesSaved++;
@@ -203,7 +289,6 @@ public class State {
                     hostageCarried.remove(i);
                     hostageDamage.remove(i);
                     dropped=true;
-
                 }
             }
         }
@@ -213,54 +298,56 @@ public class State {
         else {
             return true;
         }
-        
-
     }
 
-    public  boolean fly(){
+    public boolean fly(){
         for(int i=0; i<startPadLocationX.length;i++){
             if(neoLocationX==startPadLocationX[i] && neoLocationY==startPadLocationX[i]){
-            neoLocationX=finishPadLocationX[i];
+                neoLocationX=finishPadLocationX[i];
                 neoLocationY=finishPadLocationY[i];
-            return true;
+                return true;
             }
         }
-
-            return true;
-        
-
+        return true;
     }
 
 
-// public  boolean takePill(){
+    public boolean takePill(){
 
 
-// }
-// public  boolean kill(){
+        return false;
+    }
+    
+    public boolean kill(){
 
-
-// }
-
-public void Step(){
-    //increase hostage damage by 2
-    for(int i =0;i<hostageDamage.size();i++){
-        //only increase damage if hostage is not dead
-        if(hostageDamage.get(i)<98){
-            hostageDamage.set(i,hostageDamage.get(i)+2);
-            if(hostageDamage.get(i)==100)
-                hostagesDead++;
-        }
-        //convert hostage to agent if damage is equal to or greater than 100 and is not carried by neo
-        if(hostageDamage.get(i)>=100 && hostageCarriedBefore.get(i)==false){
-            agentsLocationX.add(hostageLocationX.remove(i));
-            agentsLocationY.add(hostageLocationY.remove(i));
-            hostageDamage.remove(i);
-        }
+        return false;
     }
 
-}
-
-
-
+    public void Step(){
+        //increase hostage damage by 2
+        for(int i =0;i<hostageDamage.size();i++){
+            //only increase damage if hostage is not dead
+            int hostDam = hostageDamage.get(i);
+            if(hostDam<98){
+                hostageDamage.set(i,hostDam+2);
+            }
+            else{
+                if(hostDam>=98 && hostDam<100){
+                    hostageDamage.set(i,100);
+                    hostagesDead++;
+                }
+            }
+            //convert hostage to agent if damage is equal to or greater than 100 and is not carried by neo
+            if(hostDam>=100){
+                if(hostageCarried.get(i)==false){
+                    int x = hostageLocationX.remove(i);
+                    int y = hostageLocationY.remove(i);
+                    hostageDamage.remove(i);
+                    agentsLocationX.add(x);
+                    agentsLocationY.add(y);
+                }
+            }
+        }
+    }
 
 }
