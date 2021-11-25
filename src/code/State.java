@@ -9,22 +9,10 @@ public class State {
     int telephoneBoothY;
     int neoLocationX;
     int neoLocationY;
-    int neoDamage;
-    ArrayList<Integer>  hostageLocationX;
-    ArrayList<Integer>  hostageLocationY;
-    ArrayList<Integer>  hostageDamage;
-    ArrayList<Boolean>  hostageCarried; 
+    String[][] grid;
     int currentCarried;
     int hostagesSaved;
     int hostagesDead;
-    ArrayList<Integer> pillLocationX;
-    ArrayList<Integer>  pillLocationY;
-    int[] startPadLocationX;
-    int[] startPadLocationY;
-    int[] finishPadLocationX;
-    int[] finishPadLocationY;
-    ArrayList<Integer> agentsLocationX;
-    ArrayList<Integer>  agentsLocationY;
     int agentsKilled;
 
     //Constructor

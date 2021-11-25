@@ -332,22 +332,15 @@ public class Matrix extends GenericSearch {
         String[] pad2D = GridSplit[6].split(",");
         int hostagesSize= ((GridSplit[7].split(",")).length)/3;
         String[] hostages2D = GridSplit[7].split(",");
-        ArrayList<Integer> hostagesX= new  ArrayList<Integer> (hostagesSize);
-        ArrayList<Integer> hostagesY= new  ArrayList<Integer> (hostagesSize);
-        ArrayList<Integer> hostagesDamage= new  ArrayList<Integer> (hostagesSize);
-        ArrayList<Boolean> hostagesCarried= new  ArrayList<Boolean> (Arrays.asList(new Boolean[hostagesSize]));
-        Collections.fill(hostagesCarried, false);
+
+        String[][] gridReturn = new String[m][n];
         for(int i=0;i<hostages2D.length;i+=3){
-            hostagesX.add(i/3,Integer.parseInt(hostages2D[i]));
-            hostagesY.add(i/3,Integer.parseInt(hostages2D[i+1]));
-            hostagesDamage.add(i/3,Integer.parseInt(hostages2D[i+2]));    
+            gridReturn[Integer.parseInt(hostages2D[i])][Integer.parseInt(hostages2D[i+1])] = "H,"+hostages2D[i+2];
         }
 
-        ArrayList<Integer> pillsX= new  ArrayList<Integer> (pillSize);
-        ArrayList<Integer> pillsY= new  ArrayList<Integer> (pillSize); 
+
         for(int i=0;i<pill2D.length;i+=2){
-            pillsX.add(i/2,Integer.parseInt(pill2D[i]));
-            pillsY.add(i/2,Integer.parseInt(pill2D[i+1]));
+            gridReturn[Integer.parseInt(pill2D[i])][Integer.parseInt(pill2D[i+1])] = "P";
         }
         int[] startPadsX=new int[padSize*2];
         int[] startPadsY=new int[padSize*2];
