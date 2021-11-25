@@ -12,6 +12,7 @@ public class State {
     ArrayList<Integer>  hostageLocationX;
     ArrayList<Integer>  hostageLocationY;
     ArrayList<Boolean>  hostageCarried; 
+    ArrayList<Boolean>  hostageCarriedBefore;
     int currentCarried=0;
     int hostagesSaved=0;
     int hostagesDead=0;
@@ -24,7 +25,24 @@ public class State {
     int[] finishPadLocationY;
     ArrayList<Integer> agentsLocationX;
     ArrayList<Integer>  agentsLocationY;
-    public State(int n,int m,int c,int telephoneBoothX,int telephoneBoothY,int neoLocationX,int neoLocationY,    ArrayList<Integer>  hostageLocationX,    ArrayList<Integer>  hostageLocationY,    ArrayList<Integer>  hostageDamage,    ArrayList<Integer>  pillLocationX,    ArrayList<Integer>  pillLocationY,int[] startPadLocationX,int[] startPadLocationY,int[] finishPadLocationX,int[] finishPadLocationY,    ArrayList<Integer> agentsLocationX,    ArrayList<Integer> agentsLocationY){
+    public State(int n,int m,int c,
+    int telephoneBoothX,
+    int telephoneBoothY,
+    int neoLocationX,
+    int neoLocationY,    
+    ArrayList<Integer>  hostageLocationX,    
+    ArrayList<Integer>  hostageLocationY,    
+    ArrayList<Integer>  hostageDamage,
+    ArrayList<Boolean>  hostageCarried,
+    ArrayList<Boolean>  hostageCarriedBefore,    
+    ArrayList<Integer>  pillLocationX,    
+    ArrayList<Integer>  pillLocationY,
+    int[] startPadLocationX,
+    int[] startPadLocationY,
+    int[] finishPadLocationX,
+    int[] finishPadLocationY,    
+    ArrayList<Integer> agentsLocationX,    
+    ArrayList<Integer> agentsLocationY){
         this.n=n;
         this.m=m;
         this.c=c;
@@ -36,6 +54,8 @@ public class State {
         this.hostageLocationX=hostageLocationX;
         this.hostageLocationY=hostageLocationY;
         this.hostageDamage=hostageDamage;
+        this.hostageCarriedBefore=hostageCarriedBefore;
+        this.hostageCarried=hostageCarried;
         this.pillLocationX=pillLocationX;
         this.pillLocationY=pillLocationY;
         this.startPadLocationX=startPadLocationX;
@@ -127,13 +147,10 @@ public class State {
         }
         }
 
-        public  boolean MoveDown (){
+    public  boolean MoveDown (){
 
         if(  neoLocationX-1<n){
         neoLocationX--;
-        for(int i=0; i<hostageDamage.size();i++){
-            hostageDamage.set(i, hostageDamage.get(i)+2);
-        }
         return true;
         }
         else {
@@ -144,9 +161,6 @@ public class State {
     public  boolean MoveLeft (){
         if(  neoLocationY-1<n){
         neoLocationY--;
-        for(int i=0; i<hostageDamage.size();i++){
-            hostageDamage.set(i, hostageDamage.get(i)+2);
-        }
         return true;
         }
         else {
@@ -157,9 +171,6 @@ public class State {
     public  boolean MoveRight (){
         if(  neoLocationY+1<n){
         neoLocationY++;
-        for(int i=0; i<hostageDamage.size();i++){
-            hostageDamage.set(i, hostageDamage.get(i)+2);
-        }
         return true;
         }
         else {
@@ -168,12 +179,10 @@ public class State {
     }
 
     public  boolean carry (){
-        for(int i=0; i<hostageDamage.size();i++){
-            hostageDamage.set(i, hostageDamage.get(i)+2);
-        }
         for (int i = 0; i < hostageLocationX.size(); i++) {
             if (neoLocationX == hostageLocationX.get(i)&& neoLocationY == hostageLocationY.get(i) && c>currentCarried) {
             hostageCarried.set(i,true);
+            hostageCarriedBefore.set(i,true);
             currentCarried++;
             return true;
             }
@@ -183,9 +192,6 @@ public class State {
     }
 
     public  boolean drop(){
-        for(int i=0; i<hostageDamage.size();i++){
-            hostageDamage.set(i, hostageDamage.get(i)+2);
-        }
         boolean dropped= false;
         if(neoLocationX==telephoneBoothX && neoLocationY==telephoneBoothY &&currentCarried>0 ){
             for (int i = 0; i < hostageLocationX.size(); i++) {
@@ -207,12 +213,11 @@ public class State {
         else {
             return true;
         }
+        
+
     }
 
     public  boolean fly(){
-        for(int i=0; i<hostageDamage.size();i++){
-            hostageDamage.set(i, hostageDamage.get(i)+2);
-        }
         for(int i=0; i<startPadLocationX.length;i++){
             if(neoLocationX==startPadLocationX[i] && neoLocationY==startPadLocationX[i]){
             neoLocationX=finishPadLocationX[i];
@@ -222,6 +227,8 @@ public class State {
         }
 
             return true;
+        
+
     }
 
 
@@ -234,7 +241,24 @@ public class State {
 
 // }
 
+public void Step(){
+    //increase hostage damage by 2
+    for(int i =0;i<hostageDamage.size();i++){
+        //only increase damage if hostage is not dead
+        if(hostageDamage.get(i)<98){
+            hostageDamage.set(i,hostageDamage.get(i)+2);
+            if(hostageDamage.get(i)==100)
+                hostagesDead++;
+        }
+        //convert hostage to agent if damage is equal to or greater than 100 and is not carried by neo
+        if(hostageDamage.get(i)>=100 && hostageCarriedBefore.get(i)==false){
+            agentsLocationX.add(hostageLocationX.remove(i));
+            agentsLocationY.add(hostageLocationY.remove(i));
+            hostageDamage.remove(i);
+        }
+    }
 
+}
 
 
 

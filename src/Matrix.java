@@ -30,7 +30,7 @@ public class Matrix extends GenericSearch {
     public State ApplyOperator(State state, String operator) {
         State newState = new State(state.n, state.m, state.c, state.telephoneBoothX, state.telephoneBoothY,
                 state.neoLocationX, state.neoLocationY, state.hostageLocationX, state.hostageLocationY,
-                state.hostageDamage, state.pillLocationX, state.pillLocationY, state.startPadLocationX,
+                state.hostageDamage,state.hostageCarriedBefore,state.hostageCarried, state.pillLocationX, state.pillLocationY, state.startPadLocationX,
                 state.startPadLocationY, state.finishPadLocationX, state.finishPadLocationY, state.agentsLocationX,state.agentsLocationY );
         // TODO: implement ApplyOperator (check if it is even possible else return null)
         switch (operator) {
@@ -260,6 +260,8 @@ public class Matrix extends GenericSearch {
         ArrayList<Integer> hostagesX= new  ArrayList<Integer> (hostagesSize);
         ArrayList<Integer> hostagesY= new  ArrayList<Integer> (hostagesSize);
         ArrayList<Integer> hostagesDamage= new  ArrayList<Integer> (hostagesSize);
+        ArrayList<Boolean> hostagesCarried= new  ArrayList<Boolean> (hostagesSize);
+        ArrayList<Boolean> hostageCarriedBefore= new  ArrayList<Boolean> (hostagesSize);
         for(int i=0;i<hostages2D.length;i+=3){
             hostagesX.add(i/3,Integer.parseInt(hostages2D[i]));
             hostagesY.add(i/3,Integer.parseInt(hostages2D[i+1]));
@@ -297,7 +299,7 @@ public class Matrix extends GenericSearch {
             agentsY.add(i/2,Integer.parseInt(agent2D[i+1]));
         }        //initializing problem 
     
-        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,hostagesX,hostagesY,hostagesDamage,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY);
+        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,hostagesX,hostagesY,hostagesDamage,hostageCarriedBefore,hostagesCarried,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY);
         String[] operators={"up", "down", "left", "right", "carry","drop", "takePill", "kill","fly"};
         Matrix problem = new Matrix(operators,initialState);
         GenericSearchProcedure(problem, "BF");
