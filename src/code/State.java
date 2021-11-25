@@ -1,3 +1,4 @@
+package code;
 import java.util.ArrayList;
 
 public class State {
@@ -24,6 +25,7 @@ public class State {
     int[] finishPadLocationY;
     ArrayList<Integer> agentsLocationX;
     ArrayList<Integer>  agentsLocationY;
+    int agentsKilled;
     boolean gameOver;
 
     public State(int n,int m,int c,
@@ -46,7 +48,8 @@ public class State {
     int[] finishPadLocationX,
     int[] finishPadLocationY,    
     ArrayList<Integer> agentsLocationX,    
-    ArrayList<Integer> agentsLocationY
+    ArrayList<Integer> agentsLocationY,
+    int agentsKilled
     ) {
         this.n=n;
         this.m=m;
@@ -71,6 +74,7 @@ public class State {
         this.finishPadLocationY=finishPadLocationY;
         this.agentsLocationX=agentsLocationX;
         this.agentsLocationY=agentsLocationY;
+        this.agentsKilled=agentsKilled;
     }
     
     public String toString(){
@@ -323,12 +327,14 @@ public class State {
                 pillLocationY.remove(i);
                 // loop over all living hostages and decrease their damage by 22 
                 for(int j=0;j<hostageLocationX.size();j++){
+                    //make sure that if neo is carrying dead hostages we don't decrease their damage
                     if(hostageDamage.get(j)!=100){
                         hostageDamage.set(j,hostageDamage.get(j)-20);
                         if(hostageDamage.get(j)<0)
                             hostageDamage.set(j,0);
                     }
                 }
+                //decreasing neo's damage by 20
                 neoDamage-=20;
                 if(neoDamage<0)
                     neoDamage=0;
@@ -339,7 +345,17 @@ public class State {
     }
     
     public boolean kill(){
-        //loop over agents arraylist and check if neo is adjacent to an an agent then kill it and remove it from the arraylist and decrease neo's damage by 20
+
+        //check if there is no alive hostage in the same location as neo
+        //note that this check happens before increasing the hostage damage by 2
+        for(int i=0;i<hostageLocationX.size();i++){
+            if(hostageLocationX.get(i)==neoLocationX && hostageLocationY.get(i)==neoLocationY && hostageDamage.get(i)<100){
+                return false;
+            }
+        }
+
+        //loop over agents arraylist and check if neo is adjacent 
+        //to an an agent then kill it and remove it from the arraylist and decrease neo's damage by 20
         for(int i=0;i<agentsLocationX.size();i++){
             if(isAgentAdjacent(agentsLocationX.get(i),agentsLocationY.get(i))){
                 agentsLocationX.remove(i);
@@ -369,6 +385,7 @@ public class State {
             return false;
         }
     }
+    
     public void Step(){
         //increase hostage damage by 2
         for(int i =0;i<hostageDamage.size();i++){

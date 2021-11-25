@@ -1,3 +1,4 @@
+package code;
 public class SearchTreeNode {
     State state;
     SearchTreeNode parentNode;

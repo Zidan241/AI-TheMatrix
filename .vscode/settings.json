@@ -2,8 +2,12 @@
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
     "java.configuration.runtimes": 
-        {
-          "name": "JavaSE-1.8",
-          "path": "/usr/local/jdk1.8.0_201"
-        }
+      {
+        "name": "JavaSE-1.8",
+        "path": "/usr/local/jdk1.8.0_201"
+      },
+    "java.project.referencedLibraries": [
+          "lib/**/*.jar",
+          "C:\\Users\\zidan\\Downloads\\junit-platform-console-standalone-1.7.0-M1.jar"
+      ]
 }

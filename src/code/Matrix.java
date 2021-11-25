@@ -1,3 +1,4 @@
+package code;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.ArrayList;
@@ -7,6 +8,11 @@ public class Matrix extends GenericSearch {
     }
 
     public boolean GoalTest(State currentState) {
+        //We reach a goal state if there are no more alive hostages yet to save or neo dies
+
+        if(currentState.neoDamage==100){
+            return true;
+        }
         if (currentState.neoLocationX == currentState.telephoneBoothX
                 && currentState.neoLocationY == currentState.telephoneBoothY) {
             for (int i = 0; i < currentState.hostageDamage.size(); i++) {
@@ -31,14 +37,17 @@ public class Matrix extends GenericSearch {
         State newState = new State(state.n, state.m, state.c, state.telephoneBoothX, state.telephoneBoothY,
                 state.neoLocationX, state.neoLocationY,state.neoDamage, state.hostageLocationX, state.hostageLocationY,
                 state.hostageDamage,state.hostageCarried,state.currentCarried,state.hostagesSaved,state.hostagesDead, state.pillLocationX, state.pillLocationY, state.startPadLocationX,
-                state.startPadLocationY, state.finishPadLocationX, state.finishPadLocationY, state.agentsLocationX,state.agentsLocationY );
+                state.startPadLocationY, state.finishPadLocationX, state.finishPadLocationY, state.agentsLocationX,state.agentsLocationY, state.agentsKilled);
 
-                if(operator!="takePill")
-                    newState.Step();
-        // TODO: implement ApplyOperator (check if it is even possible else return null)
+
+        //we first update the state according to the operator before we increase all hostages damage by 2
+        //because for example if we are in the same cell as a hostage with damage of 99 and we preform a kill operation
+        //this would be an illegal action therefore we make sure that the action is valid first then we incresase all hostages damage by 2
+        //we will increase all hostages damage by 2 in all operation execpt the take pill one, as we will decrease all hostages damage by 20
         switch (operator) {
             case "up":
              if( newState.MoveUp() ){
+                 newState.Step();
                  return newState;
              }
              else{
@@ -46,6 +55,7 @@ public class Matrix extends GenericSearch {
              }
             case "down":
             if( newState.MoveDown() ){
+                newState.Step();
                 return newState;
             }
             else{
@@ -53,6 +63,7 @@ public class Matrix extends GenericSearch {
             }
             case "left":
             if( newState.MoveLeft() ){
+                newState.Step();
                 return newState;
             }
             else{
@@ -60,6 +71,7 @@ public class Matrix extends GenericSearch {
             }
             case "right":
             if( newState.MoveRight() ){
+                newState.Step();
                 return newState;
             }
             else{
@@ -67,6 +79,7 @@ public class Matrix extends GenericSearch {
             }
             case "carry":
             if( newState.carry()){
+                newState.Step();
                 return newState;
             }
             else{
@@ -74,6 +87,7 @@ public class Matrix extends GenericSearch {
             }
             case "drop":
             if( newState.drop()){
+                newState.Step();
                 return newState;
             }
             else{
@@ -82,6 +96,7 @@ public class Matrix extends GenericSearch {
 
             case "fly":
             if( newState.fly()){
+                newState.Step();
                 return newState;
             }
             else{
@@ -89,6 +104,14 @@ public class Matrix extends GenericSearch {
             }
             case "takePill":
             if( newState.takePill()){
+                return newState;
+            }
+            else{
+                return null;
+            }
+            case "kill":
+            if( newState.kill()){
+                newState.Step();
                 return newState;
             }
             else{
@@ -217,7 +240,7 @@ public class Matrix extends GenericSearch {
     public static void ViewGrid(String Grid) {
         String[] GridSplit = Grid.split(";");
         String[] GridSize = GridSplit[0].split(",");
-        // String[] NeoCarry=GridSplit[1].split(",");
+        //String[] NeoCarry=GridSplit[1].split(",");
         String[][] GridView = new String[Integer.parseInt(GridSize[0])][Integer.parseInt(GridSize[1])];
         String[] Neo = GridSplit[2].split(",");
         String[] Telephone = GridSplit[3].split(",");
@@ -303,17 +326,40 @@ public class Matrix extends GenericSearch {
         }
 
         ArrayList<Integer> agentsX =new  ArrayList<Integer> (agentSize); 
-        ArrayList<Integer> agentsY =new  ArrayList<Integer> (agentSize); 
+        ArrayList<Integer> agentsY =new  ArrayList<Integer> (agentSize);
+        int agentsKilled = 0; 
         for(int i=0;i<agent2D.length;i+=2){
             agentsX.add(i/2,Integer.parseInt(agent2D[i]));
             agentsY.add(i/2,Integer.parseInt(agent2D[i+1]));
-        }        //initializing problem 
-    
-        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,NeoDamage,hostagesX,hostagesY,hostagesDamage,hostagesCarried,0,0,0,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY);
+        }        
+        //initializing problem 
+        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,NeoDamage,hostagesX,hostagesY,hostagesDamage,hostagesCarried,0,0,0,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY,agentsKilled);
         String[] operators={"up", "down", "left", "right", "carry","drop", "takePill", "kill","fly"};
         Matrix problem = new Matrix(operators,initialState);
-        GenericSearchProcedure(problem, "BF");
-        return "";
+        SearchTreeNode solution = GenericSearchProcedure(problem, "BF");
+        if(solution == null){
+            return "No Solution";
+        }
+        else{
+            String solutionString = "";
+            String plan = "";
+            SearchTreeNode tempNode=solution;
+            while(tempNode!=null){
+                plan+=tempNode.operator;
+                if(tempNode.parentNode!=null){
+                    plan+=",";
+                }
+                tempNode=tempNode.parentNode;
+            }
+            solutionString+=plan;
+            solutionString+=";";
+            solutionString+=solution.state.hostagesDead;
+            solutionString+=";";
+            solutionString+=solution.state.agentsKilled;
+            solutionString+=";";
+            solutionString+=problem.nodesExpanded;
+            return solutionString;
+        }
     }
     public static void main(String[] args) throws Exception {
         // String grid = genGrid();

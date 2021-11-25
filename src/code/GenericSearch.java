@@ -1,3 +1,4 @@
+package code;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -8,7 +9,7 @@ public abstract class GenericSearch {
         this.operators = operators;
         this.initialState = initialState;
     }
-
+    int nodesExpanded = 0;
     abstract boolean GoalTest(State currentState);
     abstract int PathCost(State state, String operator);
     abstract State ApplyOperator(State state, String operator);
@@ -38,6 +39,9 @@ public abstract class GenericSearch {
                 return null;
             
             SearchTreeNode currentNode = queue.removeFirst();
+            //we increase the number of nodes expanded everytime we dequeue a node from the queue
+            problem.nodesExpanded++;
+
             if(problem.GoalTest(currentNode.state)){
                 return currentNode;
             }
