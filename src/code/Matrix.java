@@ -324,16 +324,13 @@ public class Matrix extends GenericSearch {
         int NeoY = Integer.parseInt(GridSplit[2].split(",")[1]);
         int telephoneX= Integer.parseInt(GridSplit[3].split(",")[0]);
         int telephoneY =Integer.parseInt(GridSplit[3].split(",")[1]);
-        int agentSize= ((GridSplit[4].split(",")).length)/2;
         String[] agent2D = GridSplit[4].split(",");
-        int pillSize= ((GridSplit[5].split(",")).length)/2;
         String[] pill2D = GridSplit[5].split(",");
-        int padSize= ((GridSplit[6].split(",")).length)/4;
         String[] pad2D = GridSplit[6].split(",");
         int hostagesSize= ((GridSplit[7].split(",")).length)/3;
         String[] hostages2D = GridSplit[7].split(",");
-
         String[][] gridReturn = new String[m][n];
+        gridReturn[telephoneX][telephoneY]="TB";
         for(int i=0;i<hostages2D.length;i+=3){
             gridReturn[Integer.parseInt(hostages2D[i])][Integer.parseInt(hostages2D[i+1])] = "H,"+hostages2D[i+2];
         }
@@ -342,32 +339,15 @@ public class Matrix extends GenericSearch {
         for(int i=0;i<pill2D.length;i+=2){
             gridReturn[Integer.parseInt(pill2D[i])][Integer.parseInt(pill2D[i+1])] = "P";
         }
-        int[] startPadsX=new int[padSize*2];
-        int[] startPadsY=new int[padSize*2];
-        int[] finishPadsX=new int[padSize*2];
-        int[] finishPadsY=new int[padSize*2];
-
         for(int i =0;i<pad2D.length;i+=4){
-            startPadsX[i/4]=Integer.parseInt(pad2D[i]);
-            startPadsY[i/4]=Integer.parseInt(pad2D[i+1]);
-            finishPadsX[i/4]=Integer.parseInt(pad2D[i+2]);
-            finishPadsY[i/4]=Integer.parseInt(pad2D[i+3]);
+            gridReturn[Integer.parseInt(pad2D[i])][Integer.parseInt(pad2D[i+1])] = "Pad,"+pad2D[i+2]+","+pad2D[i+3];
+            gridReturn[Integer.parseInt(pad2D[i+2])][Integer.parseInt(pad2D[i+3])] = "Pad,"+pad2D[i]+","+pad2D[i+1];
         }
-        for(int i =pad2D.length;i<pad2D.length*2;i+=4){
-            finishPadsX[i/4]=Integer.parseInt(pad2D[i/4]);
-            finishPadsY[i/4]=Integer.parseInt(pad2D[i/4+1]);
-            startPadsX[i/4]=Integer.parseInt(pad2D[i/4+2]);
-            startPadsY[i/4]=Integer.parseInt(pad2D[i/4+3]);
-        }
-
-        ArrayList<Integer> agentsX =new  ArrayList<Integer> (agentSize); 
-        ArrayList<Integer> agentsY =new  ArrayList<Integer> (agentSize);
         for(int i=0;i<agent2D.length;i+=2){
-            agentsX.add(i/2,Integer.parseInt(agent2D[i]));
-            agentsY.add(i/2,Integer.parseInt(agent2D[i+1]));
+            gridReturn[Integer.parseInt(agent2D[i])][Integer.parseInt(agent2D[i+1])] = "A";
         }        
         //initializing problem 
-        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,0,hostagesX,hostagesY,hostagesDamage,hostagesCarried,0,0,0,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY,0);
+        State initialState=new State(gridReturn,n,m,c,telephoneX,telephoneY,NeoX,NeoY,0,0,0,hostagesSize,0);
         String[] operators={"carry", "drop", "takePill", "up", "down", "left", "right", "fly", "kill"};
         Matrix problem = new Matrix(operators,initialState);
         SearchTreeNode solution = GenericSearchProcedure(problem, strategy);
