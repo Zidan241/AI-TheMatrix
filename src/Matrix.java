@@ -29,9 +29,12 @@ public class Matrix extends GenericSearch {
 
     public State ApplyOperator(State state, String operator) {
         State newState = new State(state.n, state.m, state.c, state.telephoneBoothX, state.telephoneBoothY,
-                state.neoLocationX, state.neoLocationY, state.hostageLocationX, state.hostageLocationY,
-                state.hostageDamage,state.hostageCarried, state.pillLocationX, state.pillLocationY, state.startPadLocationX,
+                state.neoLocationX, state.neoLocationY,state.neoDamage, state.hostageLocationX, state.hostageLocationY,
+                state.hostageDamage,state.hostageCarried,state.currentCarried,state.hostagesSaved,state.hostagesDead, state.pillLocationX, state.pillLocationY, state.startPadLocationX,
                 state.startPadLocationY, state.finishPadLocationX, state.finishPadLocationY, state.agentsLocationX,state.agentsLocationY );
+
+                if(operator!="takePill")
+                    newState.Step();
         // TODO: implement ApplyOperator (check if it is even possible else return null)
         switch (operator) {
             case "up":
@@ -79,6 +82,13 @@ public class Matrix extends GenericSearch {
 
             case "fly":
             if( newState.fly()){
+                return newState;
+            }
+            else{
+                return null;
+            }
+            case "takePill":
+            if( newState.takePill()){
                 return newState;
             }
             else{
@@ -247,6 +257,7 @@ public class Matrix extends GenericSearch {
         int c = Integer.parseInt(GridSplit[1]);
         int NeoX= Integer.parseInt(GridSplit[2].split(",")[0]);
         int NeoY = Integer.parseInt(GridSplit[2].split(",")[1]);
+        int NeoDamage=0;
         int telephoneX= Integer.parseInt(GridSplit[3].split(",")[0]);
         int telephoneY =Integer.parseInt(GridSplit[3].split(",")[1]);
         int agentSize= ((GridSplit[4].split(",")).length)/2;
@@ -298,7 +309,7 @@ public class Matrix extends GenericSearch {
             agentsY.add(i/2,Integer.parseInt(agent2D[i+1]));
         }        //initializing problem 
     
-        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,hostagesX,hostagesY,hostagesDamage,hostagesCarried,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY);
+        State initialState=new State(n,m,c,telephoneX,telephoneY,NeoX,NeoY,NeoDamage,hostagesX,hostagesY,hostagesDamage,hostagesCarried,0,0,0,pillsX,pillsY,startPadsX,startPadsY,finishPadsX,finishPadsY,agentsX,agentsY);
         String[] operators={"up", "down", "left", "right", "carry","drop", "takePill", "kill","fly"};
         Matrix problem = new Matrix(operators,initialState);
         GenericSearchProcedure(problem, "BF");
