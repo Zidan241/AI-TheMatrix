@@ -35,28 +35,28 @@ public class Matrix extends GenericSearch {
         // TODO: implement ApplyOperator (check if it is even possible else return null)
         switch (operator) {
             case "up":
-             if( newState.MoveUp()){
+             if( newState.MoveUp() ){
                  return newState;
              }
              else{
                  return null;
              }
             case "down":
-            if( newState.MoveDown()){
+            if( newState.MoveDown() ){
                 return newState;
             }
             else{
                 return null;
             }
             case "left":
-            if( newState.MoveLeft()){
+            if( newState.MoveLeft() ){
                 return newState;
             }
             else{
                 return null;
             }
             case "right":
-            if( newState.MoveRight()){
+            if( newState.MoveRight() ){
                 return newState;
             }
             else{
@@ -85,7 +85,6 @@ public class Matrix extends GenericSearch {
                 return null;
             }
         }
-
         return newState;
     }
 
@@ -204,8 +203,6 @@ public class Matrix extends GenericSearch {
         }
         return Grid;
     }
-
-
 
     public static void ViewGrid(String Grid) {
         String[] GridSplit = Grid.split(";");

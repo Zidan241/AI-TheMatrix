@@ -18,10 +18,12 @@ public abstract class GenericSearch {
         for(int i = 0; i < problem.operators.length; i++){
             String operator = problem.operators[i];
             State nextState = problem.ApplyOperator(node.state, operator);
-            int pathCost = node.pathCost + problem.PathCost(nextState, operator);
-            int depth = node.depth + 1;
-            SearchTreeNode child = new SearchTreeNode(nextState, node, operator, depth, pathCost);
-            children.add(child);
+            if(nextState !=null){
+                int pathCost = node.pathCost + problem.PathCost(nextState, operator);
+                int depth = node.depth + 1;
+                SearchTreeNode child = new SearchTreeNode(nextState, node, operator, depth, pathCost);
+                children.add(child);
+            }
         }
         return children;
     }
@@ -31,6 +33,10 @@ public abstract class GenericSearch {
         SearchTreeNode initialNode = new SearchTreeNode(problem.initialState, null, null, 0, 0);
         queue.add(initialNode);
         while(true){
+            
+            if(queue.isEmpty())
+                return null;
+            
             SearchTreeNode currentNode = queue.removeFirst();
             if(problem.GoalTest(currentNode.state)){
                 return currentNode;
@@ -38,7 +44,7 @@ public abstract class GenericSearch {
             else{
                 switch (seatchStrategy){
                     case "BF":
-                    BFS(queue, Expand(problem, currentNode));
+                        BFS(queue, Expand(problem, currentNode));
                     break;
                     case "DF":
                     break;
