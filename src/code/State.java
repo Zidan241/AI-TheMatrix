@@ -163,7 +163,7 @@ public class State {
     }
 
     public boolean carry() {
-        if(hostagesCarriedDamage.isEmpty()) 
+        if(hostagesCarriedDamage.size()==c) 
             return false; 
         if (grid[neoLocationX][neoLocationY] != null) {
             String[] cellContent = grid[neoLocationX][neoLocationY].split(",");
@@ -180,10 +180,11 @@ public class State {
     public boolean drop() {
         if (grid[neoLocationX][neoLocationY] != null && grid[neoLocationX][neoLocationY].split(",")[0].equals("TB")&&!hostagesCarriedDamage.isEmpty()){
             //loop over carried hostages and for each hostage whose damage is less than 100 we increase the hostages saved counter
-            System.out.println("droppppppppppppp");
-            for(int i =0;i<hostagesCarriedDamage.size();i++)
-                if(hostagesCarriedDamage.get(i)<100)
+            for(int i =0;i<hostagesCarriedDamage.size();i++){
+                if(hostagesCarriedDamage.get(i)<100){
                     hostagesSaved++;
+                }
+            }
             hostagesCarriedDamage=new ArrayList<Integer>();
             return true;
         }
@@ -207,13 +208,14 @@ public class State {
         // loop over pills arraylist and check if neo is at the same location as a pill
         // then take it and remove it from the arraylist
         if (grid[neoLocationX][neoLocationY] != null && grid[neoLocationX][neoLocationY].split(",")[0].equals("P")) {
+            grid[neoLocationX][neoLocationY]=null;
             neoDamage -= 20;
-            if (neoDamage < 0)
+            if (neoDamage < 0){
                 neoDamage = 0;
+            }
             // loop over all living hostages and decrease their damage by 22
             for (int i = 0; i < grid.length; i++) {
                 for (int j = 0; j < grid[i].length; j++) {
-                    // check if there is a hostage in the same location as neo
                     if (grid[i][j] != null) {
                         String[] cellContent = grid[i][j].split(",");
                         if (cellContent[0].equals("H")) {
@@ -322,8 +324,10 @@ public class State {
                 hostagesCarriedDamage.set(i,hostagesCarriedDamage.get(i)+2);
             }
             else{
-                hostagesCarriedDamage.set(i,100);
-                hostagesDead++;
+                if(hostagesCarriedDamage.get(i) > 98 && hostagesCarriedDamage.get(i) < 100){
+                    hostagesCarriedDamage.set(i,100);
+                    hostagesDead++;
+                }
             }
         }
     }

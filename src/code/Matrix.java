@@ -43,8 +43,12 @@ public class Matrix extends GenericSearch {
             return null;
         }
 
+        String[][] A2 = state.grid.clone();
+        for (int i = 0; i < A2.length; i++) {
+            A2[i] = A2[i].clone();
+        }
         State newState = new State(
-            state.grid.clone(),
+            A2,
             state.n, 
             state.m, 
             state.c, 
@@ -267,7 +271,7 @@ public class Matrix extends GenericSearch {
             }
         }
 
-        GridView[Grid.neoLocationX][Grid.neoLocationY] += "N"+"("+Grid.neoDamage+")"+"("+Grid.hostagesCarriedDamage.size()+"H)-";
+        GridView[Grid.neoLocationX][Grid.neoLocationY] += "-N"+"("+Grid.neoDamage+")"+"("+Grid.hostagesCarriedDamage.size()+"H)-";
 
         String leftAlignFormat = "| ";
         String line="+";
@@ -332,6 +336,7 @@ public class Matrix extends GenericSearch {
             0,
             hostagesCarriedDamage
             );
+     
         String[] operators={"carry", "drop", "takePill", "up", "down", "left", "right", "fly", "kill"};
         Matrix problem = new Matrix(operators,initialState);
         SearchTreeNode solution = GenericSearchProcedure(problem, strategy);
@@ -378,7 +383,7 @@ public class Matrix extends GenericSearch {
     
     public static void main(String[] args) throws Exception {
         String grid = "5,5;2;3,4;1,2;0,3,1,4;2,3;4,4,0,2,0,2,4,4;2,2,91,2,4,62";
-        String BFSSol = solve(grid, "BF", false);
+        String BFSSol = solve(grid, "BF", true);
         System.out.print("Solution: ");
         System.out.println(BFSSol);
 
