@@ -43,6 +43,14 @@ public class Matrix extends GenericSearch {
         return stepCost;
     }
 
+    public int Heuristic1(State state, State nextState) {
+        return 0;
+    }
+
+    public int Heuristic2(State state, State nextState) {
+        return 0;
+    }
+
     public State ApplyOperator(State state, String operator) {
         //if neo dies he cannot do any operation
         if(state.neoDamage==100){

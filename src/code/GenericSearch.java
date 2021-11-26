@@ -12,6 +12,8 @@ public abstract class GenericSearch {
     int nodesExpanded = 0;
     abstract boolean GoalTest(State currentState);
     abstract int PathCost(State state, State nextState);
+    abstract int Heuristic1(State state, State nextState);
+    abstract int Heuristic2(State state, State nextState);
     abstract State ApplyOperator(State state, String operator);
 
     public static ArrayList<SearchTreeNode> Expand(GenericSearch problem, SearchTreeNode node, ArrayList<String> previousStates){
