@@ -8,8 +8,14 @@ public class Matrix extends GenericSearch {
     }
 
     public boolean GoalTest(State currentState) {
-        //We reach a goal state if we save all hostages
-        if((currentState.totalHostages-currentState.hostagesSaved)==0){
+
+        if(currentState.neoLocationX==currentState.telephoneBoothX &&
+        currentState.neoLocationY==currentState.telephoneBoothY &&
+        (currentState.totalHostages // total hostages
+        -currentState.hostagesSaved // total hostages saved
+        -currentState.agentHosatgesKilled // total mutated hostages
+        -currentState.carriedHostagesDead) // total hostages who died while neo carried them
+        ==0){ // this means that we must save all hostages and kill all of those who where mutatued
             return true;
         }
         else{
@@ -38,8 +44,8 @@ public class Matrix extends GenericSearch {
     }
 
     public State ApplyOperator(State state, String operator) {
-        //if neo dies he cannot do any operation or there is no one else left to save, because we know that this state is NOT a goal state
-        if(state.neoDamage==100 || (state.totalHostages-state.hostagesDead-state.hostagesSaved)==0){
+        //if neo dies he cannot do any operation
+        if(state.neoDamage==100){
             return null;
         }
 
@@ -61,7 +67,9 @@ public class Matrix extends GenericSearch {
             state.hostagesDead,
             state.totalHostages,
             state.agentsKilled,
-            (ArrayList<Integer>)state.hostagesCarriedDamage.clone()
+            state.agentHosatgesKilled,
+            state.carriedHostagesDead,
+            state.currentCarried
             );
 
         //we first update the state according to the operator before we increase all hostages damage by 2
@@ -262,7 +270,7 @@ public class Matrix extends GenericSearch {
         return Grid;
     }
 
-    public static void ViewGrid(State Grid,int number) {
+    public static void ViewGrid(State Grid,String number) {
         System.out.println(number+" - ");
         String[][] GridView = Grid.grid.clone();
         for (int i = 0; i < Grid.m; i++) {
@@ -272,7 +280,7 @@ public class Matrix extends GenericSearch {
             }
         }
 
-        GridView[Grid.neoLocationX][Grid.neoLocationY] += "-N"+"("+Grid.neoDamage+")"+"("+Grid.hostagesCarriedDamage.size()+"H)-";
+        GridView[Grid.neoLocationX][Grid.neoLocationY] += "-N"+"("+Grid.neoDamage+")"+"("+Grid.currentCarried+"H)-";
 
         String leftAlignFormat = "| ";
         String line="+";
@@ -322,7 +330,6 @@ public class Matrix extends GenericSearch {
             gridReturn[Integer.parseInt(agent2D[i])][Integer.parseInt(agent2D[i+1])] = "A";
         }
 
-        ArrayList<Integer> hostagesCarriedDamage = new ArrayList<Integer>();  
         //initializing problem 
         State initialState=new State(
             gridReturn,
@@ -336,14 +343,17 @@ public class Matrix extends GenericSearch {
             0,
             hostagesSize,
             0,
-            hostagesCarriedDamage
+            0,
+            0,
+            0
             );
      
-        String[] operators={"carry", "drop", "takePill", "up", "down", "left", "right", "fly", "kill"};
+        String[] operators={"carry", "takePill", "drop", "kill", "up", "down", "left", "right", "fly"};
+        //String[] operators={"takePill","drop", "carry", "left", "up", "down", "left", "right", "fly", "kill"};
         Matrix problem = new Matrix(operators,initialState);
-        ViewGrid(initialState, 0);
         SearchTreeNode solution = GenericSearchProcedure(problem, strategy);
         if(solution == null){
+            ViewGrid(initialState, "Original Grid : ");
             return "No Solution";
         }
         else{
@@ -369,7 +379,7 @@ public class Matrix extends GenericSearch {
             }
             if(visualize){
                 for(int i=0;i<states.size();i++){
-                    ViewGrid(states.get(i),i);
+                    ViewGrid(states.get(i),i+"");
                     System.out.println();
                 }
             }

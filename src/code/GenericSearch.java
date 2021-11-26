@@ -20,10 +20,10 @@ public abstract class GenericSearch {
             String operator = problem.operators[i];
             State nextState = problem.ApplyOperator(node.state, operator);
             if(nextState !=null){
-                if(!previousStates.contains(nextState.getStateString())){
+                if(!previousStates.contains(nextState.toString())){
                     //to calculate the path cost we sent the parent's state and the new node state to be able to
                     //calculate the number of deaths and kills that occured in this time step
-                    previousStates.add(nextState.getStateString());
+                    previousStates.add(nextState.toString());
                     int pathCost = node.pathCost + problem.PathCost(node.state, nextState);
                     int depth = node.depth + 1;
                     SearchTreeNode child = new SearchTreeNode(nextState, node, operator, depth, pathCost);
