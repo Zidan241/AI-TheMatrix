@@ -64,7 +64,7 @@ public class State {
                 if(grid[i][j]!=null){
                     String[] cellContent = grid[i][j].split(",");
                     if(cellContent[0].equals("H"))
-                        hostages+=i+","+j+","+cellContent[1]+",";
+                        hostages+=i+","+j+",";
                     if(cellContent[0].equals("A"))
                         agents+=i+","+j+",";
                     if(cellContent[0].equals("AH"))
@@ -89,9 +89,9 @@ public class State {
         +")(AHK,"+agentHosatgesKilled
         //+")(CHD,"+carriedHostagesDead
         +")"+pills
-        +agents
+        //+agents
         +hostages
-        +hostagesCarried
+        //+hostagesCarried
         +agentHostages
         ;
     }
@@ -413,7 +413,7 @@ public class State {
                             grid[i][j] = "CH," + hostDam;
                         }
                         else{
-                            if(hostDam > 98 && hostDam < 100){
+                            if(hostDam >= 98 && hostDam < 100){
                                 hostDam = 100;
                                 grid[i][j] = "CH," + hostDam;
                                 hostagesDead++;

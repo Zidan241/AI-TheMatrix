@@ -349,7 +349,6 @@ public class Matrix extends GenericSearch {
             );
      
         String[] operators={"carry", "takePill", "drop", "kill", "up", "down", "left", "right", "fly"};
-        //String[] operators={"takePill","drop", "carry", "left", "up", "down", "left", "right", "fly", "kill"};
         Matrix problem = new Matrix(operators,initialState);
         SearchTreeNode solution = GenericSearchProcedure(problem, strategy);
         if(solution == null){
@@ -387,7 +386,7 @@ public class Matrix extends GenericSearch {
             solutionString+=";";
             solutionString+=solution.state.hostagesDead;
             solutionString+=";";
-            solutionString+=solution.state.agentsKilled;
+            solutionString+=(solution.state.agentsKilled+solution.state.agentHosatgesKilled);
             solutionString+=";";
             solutionString+=problem.nodesExpanded;
             return solutionString;
@@ -395,7 +394,7 @@ public class Matrix extends GenericSearch {
     }
     
     public static void main(String[] args) throws Exception {
-        String grid = "5,5;1;0,4;4,4;0,3,1,4,2,1,3,0,4,1;4,0;2,4,3,4,3,4,2,4;0,2,98,1,2,98,2,2,98,3,2,98,4,2,98,2,0,1";
+        String grid = "5,5;3;1,3;4,0;0,1,3,2,4,3,2,4,0,4;3,4,3,0,4,2;1,4,1,2,1,2,1,4,0,3,1,0,1,0,0,3;4,4,45,3,3,12,0,2,88";
         String BFSSol = solve(grid, "BF", true);
         System.out.print("Solution: ");
         System.out.println(BFSSol);
