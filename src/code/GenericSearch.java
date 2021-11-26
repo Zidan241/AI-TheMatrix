@@ -1,7 +1,5 @@
 package code;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 
 public abstract class GenericSearch {
@@ -40,105 +38,69 @@ public abstract class GenericSearch {
         LinkedList<SearchTreeNode> queue = new LinkedList<SearchTreeNode>();
         ArrayList<String> previousStates = new ArrayList<String>();
         SearchTreeNode initialNode = new SearchTreeNode(problem.initialState, null, null, 0, 0);
-        switch (seatchStrategy){
-            case "BF":
-                return BFS(problem, queue, previousStates, initialNode);
-            case "DF":
-                return DFS(problem, queue, previousStates, initialNode);
-            case "ID":
-                return null;
-            case "UC":
-                return UCS(problem, queue, previousStates, initialNode);
-            default:
-            if(seatchStrategy.substring(0,2)=="GR"){
-                return null;
-            }
-            else {
-                if (seatchStrategy.substring(0,2)=="AS"){
-                    return null;
-                }else{
+        queue.add(initialNode);
+        int depth=0;
+        while(true){
+            
+            if(queue.isEmpty()){
+                if(seatchStrategy.equals("ID")){
+                    depth++;
+                    queue.add(initialNode);
+                    previousStates.clear();
+                }
+                else{
                     return null;
                 }
-            }          
-        }       
-    }
+            }
+            
+            SearchTreeNode currentNode = queue.removeFirst();
+            //we increase the number of nodes expanded everytime we dequeue a node from the queue
+            problem.nodesExpanded++;
 
-    public static void ExpandBFS(LinkedList<SearchTreeNode> queue , ArrayList<SearchTreeNode> nodes){
+            if(problem.GoalTest(currentNode.state)){
+                return currentNode;
+            }
+            else{
+                switch (seatchStrategy){
+                    case "BF":
+                        BFS(queue, Expand(problem, currentNode, previousStates));
+                    break;
+                    case "DF":
+                        DFS(queue, Expand(problem, currentNode, previousStates));
+                    break;
+                    case "ID":
+                        if(currentNode.depth < depth){
+                            DFS(queue, Expand(problem, currentNode, previousStates));
+                        }
+                    break;
+                    case "UC":
+                        UCS(queue, Expand(problem, currentNode, previousStates));
+                    break;
+                    default:
+                    if(seatchStrategy.substring(0,2)=="GR"){
+                    
+                    }
+                    else {
+                        if (seatchStrategy.substring(0,2)=="AS"){
         
+                        }
+                    }
+                    break;          
+                }
+            }
+        }
+    }
+    public static void BFS(LinkedList<SearchTreeNode> queue , ArrayList<SearchTreeNode> nodes){
         for(int i =0;i<nodes.size();i++){
             queue.addLast(nodes.get(i));
         }
     }
-
-    public static SearchTreeNode BFS(GenericSearch problem, LinkedList<SearchTreeNode> queue, ArrayList<String> previousStates, SearchTreeNode initialNode){
-        queue.add(initialNode);
-        while(true){
-            
-            if(queue.isEmpty())
-                return null;
-            
-            SearchTreeNode currentNode = queue.removeFirst();
-            //we increase the number of nodes expanded everytime we dequeue a node from the queue
-            problem.nodesExpanded++;
-
-            if(problem.GoalTest(currentNode.state)){
-                return currentNode;
-            }
-            else{
-                ExpandBFS(queue, Expand(problem, currentNode, previousStates));
-            }
-        }
-    }
-
-    public static SearchTreeNode DFS(GenericSearch problem, LinkedList<SearchTreeNode> queue, ArrayList<String> previousStates, SearchTreeNode initialNode){
-        queue.add(initialNode);
-        while(true){
-            
-            if(queue.isEmpty())
-                return null;
-            
-            SearchTreeNode currentNode = queue.removeFirst();
-            //we increase the number of nodes expanded everytime we dequeue a node from the queue
-            problem.nodesExpanded++;
-
-            if(problem.GoalTest(currentNode.state)){
-                return currentNode;
-            }
-            else{
-                ExpandDFS(queue, Expand(problem, currentNode, previousStates));
-
-            }
-        }
-    }
-    
-    public static void ExpandDFS(LinkedList<SearchTreeNode> queue , ArrayList<SearchTreeNode> nodes){
+    public static void DFS(LinkedList<SearchTreeNode> queue , ArrayList<SearchTreeNode> nodes){
         for(int i =0;i<nodes.size();i++){
             queue.add(0,nodes.get(i));
         }
     }
-
-    public static SearchTreeNode UCS(GenericSearch problem, LinkedList<SearchTreeNode> queue, ArrayList<String> previousStates, SearchTreeNode initialNode){
-        queue.add(initialNode);
-        while(true){
-            
-            if(queue.isEmpty())
-                return null;
-            
-            SearchTreeNode currentNode = queue.removeFirst();
-            //we increase the number of nodes expanded everytime we dequeue a node from the queue
-            problem.nodesExpanded++;
-
-            if(problem.GoalTest(currentNode.state)){
-                return currentNode;
-            }
-            else{
-                ExpandUCS(queue, Expand(problem, currentNode, previousStates));
-
-            }
-        }
-    }
-
-    public static void ExpandUCS(LinkedList<SearchTreeNode> queue , ArrayList<SearchTreeNode> nodes){
+    public static void UCS(LinkedList<SearchTreeNode> queue , ArrayList<SearchTreeNode> nodes){
         for(int i =0;i<nodes.size();i++){
             queue.add(0,nodes.get(i));
         } 
