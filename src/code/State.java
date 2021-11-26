@@ -1,6 +1,8 @@
 package code;
 import java.util.ArrayList;
 
+import javafx.scene.control.Cell;
+
 public class State {
     String[][] grid;
     int n;
@@ -19,7 +21,7 @@ public class State {
 
     // Constructor
     public State(
-    String[][] grid,   
+    String[][] grid,  
     int n,int m,int c,
     int telephoneBoothX,
     int telephoneBoothY,
@@ -48,6 +50,23 @@ public class State {
         this.hostagesCarriedDamage=hostagesCarriedDamage;
     }
 
+    public String getStateString(){
+        String hostages = "";
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]!=null){
+                    String[] cellContent = grid[i][j].split(",");
+                    if(cellContent[0].equals("H"))
+                        hostages+=i+""+j+""+cellContent[1];
+                }
+            }
+        }
+        for(int i=0;i<hostagesCarriedDamage.size();i++){
+            hostages+=hostagesCarriedDamage.get(i);
+        }
+        return neoLocationX+""+neoLocationY+""+neoDamage+""+hostagesSaved+""+hostagesDead+""+agentsKilled+""+hostagesCarriedDamage.size()+hostages;
+    }
+
     public String toString() {
         String s = "\n";
 
@@ -72,6 +91,7 @@ public class State {
                     return false;
                 }
             }
+
             //updating neo's location
             neoLocationX--;
             //note: no need to update the carried hostages location
@@ -99,6 +119,7 @@ public class State {
                     return false;
                 }
             }
+
             //updating neo's location
             neoLocationX++;
             //note: no need to update the carried hostages location
@@ -126,6 +147,7 @@ public class State {
                     return false;
                 }
             }
+
             //updating neo's location
             neoLocationY--;
             //note: no need to update the carried hostages location
@@ -153,6 +175,7 @@ public class State {
                     return false;
                 }
             }
+
             //updating neo's location
             neoLocationY++;
             //note: no need to update the carried hostages location

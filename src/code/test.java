@@ -117,6 +117,9 @@ public class test {
         String s = "Hello";
         System.out.println(s.split(",")[0]);
 
+        Boolean[][] visitedGrid = new Boolean[5][5];
+        System.out.println(visitedGrid[0][0]);
+
     }
     
 }

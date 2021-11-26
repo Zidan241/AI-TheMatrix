@@ -43,13 +43,13 @@ public class Matrix extends GenericSearch {
             return null;
         }
 
-        String[][] A2 = state.grid.clone();
-        for (int i = 0; i < A2.length; i++) {
-            A2[i] = A2[i].clone();
+        String[][] A1 = state.grid.clone();
+        for (int i = 0; i < A1.length; i++) {
+            A1[i] = A1[i].clone();
         }
         State newState = new State(
-            A2,
-            state.n, 
+            A1,
+            state.n,
             state.m, 
             state.c, 
             state.telephoneBoothX, 
@@ -69,7 +69,7 @@ public class Matrix extends GenericSearch {
         //this would be an illegal action therefore we make sure that the action is valid first then we incresase all hostages damage by 2
         //we will increase all hostages damage by 2 in all operation execpt the take pill one, as we will decrease all hostages damage by 20
         switch (operator) {
-            case "up":
+            case "up":{
                 if( newState.MoveUp() ){
                     newState.Step();
                     return newState;
@@ -77,6 +77,7 @@ public class Matrix extends GenericSearch {
                 else{
                     return null;
                 }
+            }
             case "down":
                 if( newState.MoveDown() ){
                     newState.Step();
@@ -320,6 +321,7 @@ public class Matrix extends GenericSearch {
         for(int i=0;i<agent2D.length;i+=2){
             gridReturn[Integer.parseInt(agent2D[i])][Integer.parseInt(agent2D[i+1])] = "A";
         }
+
         ArrayList<Integer> hostagesCarriedDamage = new ArrayList<Integer>();  
         //initializing problem 
         State initialState=new State(
@@ -339,6 +341,7 @@ public class Matrix extends GenericSearch {
      
         String[] operators={"carry", "drop", "takePill", "up", "down", "left", "right", "fly", "kill"};
         Matrix problem = new Matrix(operators,initialState);
+        ViewGrid(initialState, 0);
         SearchTreeNode solution = GenericSearchProcedure(problem, strategy);
         if(solution == null){
             return "No Solution";
@@ -382,7 +385,7 @@ public class Matrix extends GenericSearch {
     }
     
     public static void main(String[] args) throws Exception {
-        String grid = "5,5;2;3,4;1,2;0,3,1,4;2,3;4,4,0,2,0,2,4,4;2,2,91,2,4,62";
+        String grid = "5,5;1;0,4;4,4;0,3,1,4,2,1,3,0,4,1;4,0;2,4,3,4,3,4,2,4;0,2,98,1,2,98,2,2,98,3,2,98,4,2,98,2,0,1";
         String BFSSol = solve(grid, "BF", true);
         System.out.print("Solution: ");
         System.out.println(BFSSol);
