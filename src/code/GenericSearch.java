@@ -1,5 +1,7 @@
 package code;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 public abstract class GenericSearch {
@@ -46,7 +48,7 @@ public abstract class GenericSearch {
             case "ID":
                 return null;
             case "UC":
-                return null;
+                return UCS(problem, queue, previousStates, initialNode);
             default:
             if(seatchStrategy.substring(0,2)=="GR"){
                 return null;
@@ -114,5 +116,32 @@ public abstract class GenericSearch {
             queue.add(0,nodes.get(i));
         }
     }
-    
+
+    public static SearchTreeNode UCS(GenericSearch problem, LinkedList<SearchTreeNode> queue, ArrayList<String> previousStates, SearchTreeNode initialNode){
+        queue.add(initialNode);
+        while(true){
+            
+            if(queue.isEmpty())
+                return null;
+            
+            SearchTreeNode currentNode = queue.removeFirst();
+            //we increase the number of nodes expanded everytime we dequeue a node from the queue
+            problem.nodesExpanded++;
+
+            if(problem.GoalTest(currentNode.state)){
+                return currentNode;
+            }
+            else{
+                ExpandUCS(queue, Expand(problem, currentNode, previousStates));
+
+            }
+        }
+    }
+
+    public static void ExpandUCS(LinkedList<SearchTreeNode> queue , ArrayList<SearchTreeNode> nodes){
+        for(int i =0;i<nodes.size();i++){
+            queue.add(0,nodes.get(i));
+        } 
+        queue.sort(null);  
+    }
 }
