@@ -1,5 +1,6 @@
 package code;
-public class SearchTreeNode {
+
+public class SearchTreeNode implements Comparable<SearchTreeNode> {
     State state;
     SearchTreeNode parentNode;
     String operator;
@@ -14,5 +15,10 @@ public class SearchTreeNode {
     }
     public String toString(){
         return "State: " + state.toString() + " Operator: " + operator + " Depth: " + depth + " PathCost: " + pathCost;
+    }
+    @Override
+    public int compareTo(SearchTreeNode o) {
+        // TODO Auto-generated method stub
+        return o.pathCost;
     }
 }
