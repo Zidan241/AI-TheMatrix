@@ -397,7 +397,7 @@ public class Matrix extends GenericSearch {
 
         for (int i = 0 ; i < Grid.m ; i++) {
             System.out.format(line);
-            System.out.format(leftAlignFormat, GridView[i]);
+            System.out.format(leftAlignFormat, (Object[])GridView[i]);
         }
         System.out.format(line);
     }

@@ -55,9 +55,9 @@ public class State {
     
     public String toString() {
         String hostages = "(H,";
-        String agents = "(A,";
+        //String agents = "(A,";
         String agentHostages = "(AH,";
-        String hostagesCarried = "(CH,";
+        //String hostagesCarried = "(CH,";
         String pills = "(P,";
         for(int i=0;i<n;i++){
             for(int j=0;j<m;j++){
@@ -65,19 +65,19 @@ public class State {
                     String[] cellContent = grid[i][j].split(",");
                     if(cellContent[0].equals("H"))
                         hostages+=i+","+j+",";
-                    if(cellContent[0].equals("A"))
-                        agents+=i+","+j+",";
+                    //if(cellContent[0].equals("A"))
+                        //agents+=i+","+j+",";
                     if(cellContent[0].equals("AH"))
                         agentHostages+=i+","+j+",";
                     if(cellContent[0].equals("P"))
                         pills+=i+","+j+",";
-                    if(cellContent[0].equals("CH"))
-                        hostagesCarried+=i+","+j+","+cellContent[1]+",";
+                    //if(cellContent[0].equals("CH"))
+                        //hostagesCarried+=i+","+j+","+cellContent[1]+",";
                 }
             }
         }
-        hostagesCarried += ")";
-        agents += ")";
+        //hostagesCarried += ")";
+        //agents += ")";
         agentHostages += ")";
         hostages += ")";
         pills += ")";

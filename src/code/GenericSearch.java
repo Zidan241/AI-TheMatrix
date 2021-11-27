@@ -151,8 +151,7 @@ public abstract class GenericSearch {
         } 
         queue.sort(new Comparator<SearchTreeNode>() {
             @Override
-            public int compare(SearchTreeNode o1, SearchTreeNode o2) {
-                // TODO Auto-generated method stub              
+            public int compare(SearchTreeNode o1, SearchTreeNode o2) {          
                 if(o1.heuristic < o2.heuristic){
                     return -1;
                 }else{
@@ -174,8 +173,7 @@ public abstract class GenericSearch {
         } 
         queue.sort(new Comparator<SearchTreeNode>() {
             @Override
-            public int compare(SearchTreeNode o1, SearchTreeNode o2) {
-                // TODO Auto-generated method stub              
+            public int compare(SearchTreeNode o1, SearchTreeNode o2) {        
                 if(o1.heuristic+o1.pathCost < o2.heuristic+o2.pathCost){
                     return -1;
                 }else{

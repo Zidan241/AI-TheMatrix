@@ -20,7 +20,6 @@ public class SearchTreeNode implements Comparable<SearchTreeNode> {
     }
     @Override
     public int compareTo(SearchTreeNode o) {
-        // TODO Auto-generated method stub
         return o.pathCost;
     }
 
