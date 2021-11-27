@@ -1,6 +1,8 @@
 package code;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Matrix extends GenericSearch {
     public Matrix(String[] operators, State initialState) {
@@ -43,13 +45,77 @@ public class Matrix extends GenericSearch {
         return stepCost;
     }
 
-    public int Heuristic1(State state, State nextState) {
-        return 0;
+    public int Heuristic1(State state) {
+        String [][] grid=state.grid;
+        int n=state.n;
+        int m=state.m;
+        //Loop over the grid and get min distance to hostage
+        //Loop over grid and get max distance between two pads
+        //get min actions needed to save closest hostage
+        //multiply by number of hostages that can be saved
+        int minHostageDistance=n*m;
+        int maxPadDistance=0;
+        int hostagesToSave=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(i!=state.neoLocationX && j!=state.neoLocationY){
+                    if(grid[i][j]!=null){
+                        String[] cellContent=grid[i][j].split(",");
+                        if(cellContent[0].equals("H")){
+                            int hostageManhattan=Math.abs(state.neoLocationX-i)+Math.abs(state.neoLocationY-j);
+                            hostagesToSave+=1;
+                            if(hostageManhattan<minHostageDistance){
+                                minHostageDistance=hostageManhattan;                          
+                            }
+                        }
+                        if(cellContent[0].equals("P")){
+                            int fromX=i;
+                            int fromY=j;
+                            int ToX=Integer.parseInt(cellContent[1]);
+                            int ToY=Integer.parseInt(cellContent[2]);
+                            int padManhattan=Math.abs(fromX-ToX)+Math.abs(fromY-ToY);
+                            if(padManhattan>maxPadDistance){
+                                maxPadDistance=padManhattan;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        int minMoves=minHostageDistance-maxPadDistance;
+        if(minMoves<=0){
+            minMoves=2;
+        }else{
+            minMoves++;
+        }          
+        return minMoves*hostagesToSave;
     }
 
-    public int Heuristic2(State state, State nextState) {
-        return 0;
-    }
+    public int Heuristic2(State state) {
+        //calculate manhattan distance to telephone booth 
+        //calculate hostages that will die while on my way to tb 
+        //add number of dead hostages to manhattan distance calculated
+        int d = Math.abs(state.telephoneBoothX- state.neoLocationX)+Math.abs(state.telephoneBoothY- state.neoLocationY);
+        String [][] grid=state.grid;
+        int n=state.n;
+        int m=state.m;
+        int dead= 0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]!=null){
+                    String[] cellContent=grid[i][j].split(",");
+                    if(cellContent[0].equals("H")){
+                    if(Math.abs(Integer.parseInt(cellContent[1])+d)>=100){
+                        dead++;
+                    }              
+                    }
+        
+                }
+            }
+        }
+        
+        return d+dead;         
+     }
 
     public State ApplyOperator(State state, String operator) {
         //if neo dies he cannot do any operation

@@ -6,12 +6,14 @@ public class SearchTreeNode implements Comparable<SearchTreeNode> {
     String operator;
     int depth;
     int pathCost;
-    public SearchTreeNode(State state, SearchTreeNode parentNode, String operator, int depth,  int pathCost){
+    int heuristic;
+    public SearchTreeNode(State state, SearchTreeNode parentNode, String operator, int depth,  int pathCost, int heuristic){
         this.state = state;
         this.parentNode = parentNode;
         this.operator = operator;
         this.depth = depth;
         this.pathCost = pathCost;
+        this.heuristic = heuristic;
     }
     public String toString(){
         return "State: " + state.toString() + " Operator: " + operator + " Depth: " + depth + " PathCost: " + pathCost;
@@ -21,4 +23,5 @@ public class SearchTreeNode implements Comparable<SearchTreeNode> {
         // TODO Auto-generated method stub
         return o.pathCost;
     }
+
 }
