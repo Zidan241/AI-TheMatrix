@@ -1,8 +1,6 @@
 package code;
 import java.util.Random;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class Matrix extends GenericSearch {
     public Matrix(String[] operators, State initialState) {
@@ -116,6 +114,38 @@ public class Matrix extends GenericSearch {
         
         return d+dead;         
      }
+
+    public int Heuristic3(State state) {
+        int totalReturn = 0;
+        int totalHostagesAliveNotCarriedWithDamageBiggerThan97 = 0;
+        int totalHostagesAliveNotCarriedWithDamageLessThan98 = 0;
+        if(state.grid[state.neoLocationX][state.neoLocationY].split(",")[0].equals("H")){
+            totalReturn += 1;
+        }
+        for(int i=0; i<state.grid.length; i++){
+            for(int j=0; j<state.grid[i].length; j++){
+                if(state.grid[i][j]!=null){
+                    String [] cellContent = state.grid[i][j].split(",");
+                    if(cellContent[0].equals("H")){
+                        if(Integer.parseInt(cellContent[1])>97){
+                            totalHostagesAliveNotCarriedWithDamageBiggerThan97++;
+                        }
+                        else{
+                            totalHostagesAliveNotCarriedWithDamageLessThan98++;
+                        }
+                    }
+                }
+            }
+        }
+        if(!state.grid[state.neoLocationX][state.neoLocationY].split(",")[0].equals("P")){
+            totalReturn += totalHostagesAliveNotCarriedWithDamageBiggerThan97*20;
+        }
+        else{
+            totalReturn += totalHostagesAliveNotCarriedWithDamageBiggerThan97*2;
+        }
+        totalReturn += totalHostagesAliveNotCarriedWithDamageLessThan98*2;
+        return totalReturn;
+    }
 
     public State ApplyOperator(State state, String operator) {
         //if neo dies he cannot do any operation
