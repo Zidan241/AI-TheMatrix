@@ -23,6 +23,7 @@ public abstract class GenericSearch {
             String operator = problem.operators[i];
             State nextState = problem.ApplyOperator(node.state, operator);
             if(nextState !=null){
+                //to avoid repeated states check that i didn't reach this state before
                 if(!previousStates.contains(nextState.toString())){
                     //to calculate the path cost we sent the parent's state and the new node state to be able to
                     //calculate the number of deaths and kills that occured in this time step
@@ -59,6 +60,7 @@ public abstract class GenericSearch {
         LinkedList<SearchTreeNode> queue = new LinkedList<SearchTreeNode>();
         ArrayList<String> previousStates = new ArrayList<String>();
         SearchTreeNode initialNode;
+        // intialize the search tree node with the root state's heurisitc or 0 if no heurisitic is needed 
         if(seatchStrategy.substring(0,2)=="GR"){
             if(seatchStrategy.charAt(2)=='0'){
                 initialNode = new SearchTreeNode(problem.initialState, null, null, 0, 0, problem.Heuristic1(problem.initialState));

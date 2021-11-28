@@ -27,14 +27,14 @@ public class Matrix extends GenericSearch {
 
         //IMPORTANT NOTE:
         //note that we will prioritize deaths then kills then number of actions
-        //therefore cost of deaths > cost of kills > cost of actions
+        //therefore cost of Hostages deaths > cost of kills > cost of actions
 
-        //we will add the cose to go from state to nextState, were state represents the parent's state
+        //we will add the cost to go from state to nextState, were state represents the parent's state
 
         //we will add one for each step taken
         int stepCost = 1;
 
-        //for each agent taken we will increase the cost by 5
+        //for each agent killed we will increase the cost by 5
         stepCost += (nextState.agentsKilled - state.agentsKilled) * 5;
 
         //for each hostage death we will increase the cost by 20
@@ -80,19 +80,27 @@ public class Matrix extends GenericSearch {
                 }
             }
         }
+        // check if taking the pad would be needed to decrease the distance and add 1 step for taking the pill
+        // int minMoves=minHostageDistance;
+        // if(minHostageDistance>maxPadDistance){
+        //     minMoves=minHostageDistance-maxPadDistance+1;
+        // }
+
         int minMoves=minHostageDistance-maxPadDistance;
         if(minMoves<=0){
             minMoves=2;
         }else{
             minMoves++;
-        }          
+        }  
+         // after finding the minimum distance to save the closest hostages multiply that for each hostage  
         return minMoves*hostagesToSave;
     }
 
     public int Heuristic2(State state) {
         //calculate manhattan distance to telephone booth 
-        //calculate hostages that will die while on my way to tb 
+        //calculate number of hostages that will die while on my way to telephone booth  
         //add number of dead hostages to manhattan distance calculated
+        // to have cost =  steps to reach the booth + death of hostages on the way
         int d = Math.abs(state.telephoneBoothX- state.neoLocationX)+Math.abs(state.telephoneBoothY- state.neoLocationY);
         String [][] grid=state.grid;
         int n=state.n;
@@ -499,7 +507,7 @@ public class Matrix extends GenericSearch {
     
     public static void main(String[] args) throws Exception {
         String grid = "5,5;3;1,3;4,0;0,1,3,2,4,3,2,4,0,4;3,4,3,0,4,2;1,4,1,2,1,2,1,4,0,3,1,0,1,0,0,3;4,4,45,3,3,12,0,2,88";
-        String BFSSol = solve(grid, "BF", true);
+        String BFSSol = solve(grid, "BF", false);
         System.out.print("Solution: ");
         System.out.println(BFSSol);
 

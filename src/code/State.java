@@ -96,7 +96,7 @@ public class State {
         ;
     }
 
-    public boolean MoveUp() {
+    public boolean MoveDown() {
 
         // making sure new location is in the grid
         if (neoLocationX - 1 >= 0) {
@@ -124,7 +124,7 @@ public class State {
         }
     }
 
-    public boolean MoveDown() {
+    public boolean MoveUp() {
 
         // making sure new location is in the grid
         if (neoLocationX + 1 < n) {
@@ -231,6 +231,7 @@ public class State {
                        String[] cellContent = grid[i][j].split(",");
                        if(cellContent[0].equals("CH")){
                             grid[i][j]=null;
+                            // Question: will we increase +2 as a step before dropping?
                             if(Integer.parseInt(cellContent[1])<100){
                                 hostagesSaved++;
                             }
@@ -311,16 +312,14 @@ public class State {
             if(cellContent[0].equals("H")){
                 int hostDam = Integer.parseInt(cellContent[1]);
                 if(hostDam>=98){
-                    hostDam+=2;
-                    grid[neoLocationX][neoLocationY] = "H," + hostDam;
                     return false;
                 }
             }
         }
 
         // loop over agents arraylist and check if neo is adjacent
-        // to an an agent then kill it and remove it from the arraylist and decrease
-        // neo's damage by 20
+        // to an an agent then kill it and remove it from the arraylist 
+        // and increase neo's damage by 20
 
         boolean killed = false;
 
@@ -391,7 +390,6 @@ public class State {
         // loop over grid 2d array
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                // check if there is a hostage in the same location as neo
                 if (grid[i][j] != null) {
                     String[] cellContent = grid[i][j].split(",");
                     if (cellContent[0].equals("H")) {
