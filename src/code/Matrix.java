@@ -111,7 +111,7 @@ public class Matrix extends GenericSearch {
                 if(grid[i][j]!=null){
                     String[] cellContent=grid[i][j].split(",");
                     if(cellContent[0].equals("H")){
-                    if(Math.abs(Integer.parseInt(cellContent[1])+d)>=100){
+                    if(Math.abs(Integer.parseInt(cellContent[1])+(d*2))>=100){
                         dead++;
                     }              
                     }
@@ -120,7 +120,7 @@ public class Matrix extends GenericSearch {
             }
         }
         
-        return d+dead;         
+        return d+(dead*5);         
      }
 
     public int Heuristic3(State state) {
