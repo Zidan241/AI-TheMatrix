@@ -96,7 +96,7 @@ public class State {
         ;
     }
 
-    public boolean MoveDown() {
+    public boolean MoveUp() {
 
         // making sure new location is in the grid
         if (neoLocationX - 1 >= 0) {
@@ -124,7 +124,7 @@ public class State {
         }
     }
 
-    public boolean MoveUp() {
+    public boolean MoveDown() {
 
         // making sure new location is in the grid
         if (neoLocationX + 1 < n) {
