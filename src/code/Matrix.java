@@ -34,11 +34,24 @@ public class Matrix extends GenericSearch {
         //we will add one for each step taken
         int stepCost = 1;
 
-        //for each agent killed we will increase the cost by 5
-        stepCost += (nextState.agentsKilled - state.agentsKilled) * 5;
+        //for each agent killed we will increase the cost by 100
+        stepCost += (nextState.agentsKilled - state.agentsKilled) * 100;
 
-        //for each hostage death we will increase the cost by 20
-        stepCost += (nextState.hostagesDead - state.hostagesDead) * 20;
+        //for each hostage death we will increase the cost by 1100
+        stepCost += (nextState.hostagesDead - state.hostagesDead) * 1100;
+
+        //Death of hostages is the thing we want to avoid therfore we made it 10 times worse than the kill
+        //the difference between the kill and death is 10 times that of the kill
+        //Here is a situation to make sure our cost is correct
+        //The 2 situations are:
+        //1- 10 kills  
+        //2- 1 kill and 1 death
+        //if the costs of kill and death were 5 and 20 respectively
+        //then the cost of situation 1 would have been 25
+        //and the situation for situation 2 would have been also 25
+        //we donot want that because death is much worse
+        //with our current path cost function situation 1 will have a cost of 1000
+        //and situation 2 will have a cost of 1200
 
         return stepCost;
     }
@@ -124,34 +137,49 @@ public class Matrix extends GenericSearch {
      }
 
     public int Heuristic3(State state) {
+        //for this heuristic function we are going to assume the best case where
+        //all hostages are in one line, one after the other, where the first hostage is adjacent to neo
+        //for each hostage we MOVE to it then CARRY 
         int totalReturn = 0;
-        int totalHostagesAliveNotCarriedWithDamageBiggerThan97 = 0;
-        int totalHostagesAliveNotCarriedWithDamageLessThan98 = 0;
+        int totalHostagesAliveDamageBiggerThan97 = 0;
+        int totalHostagesAliveDamageLessThan98 = 0;
         if(state.grid[state.neoLocationX][state.neoLocationY].split(",")[0].equals("H")){
+            //if we are currently at a hostage then we will just CARRYTHEM
+            // we know this hostage has damage less than 98 because else it would have been an illegal move
             totalReturn += 1;
         }
         for(int i=0; i<state.grid.length; i++){
             for(int j=0; j<state.grid[i].length; j++){
                 if(state.grid[i][j]!=null){
                     String [] cellContent = state.grid[i][j].split(",");
-                    if(cellContent[0].equals("H")){
-                        if(Integer.parseInt(cellContent[1])>97){
-                            totalHostagesAliveNotCarriedWithDamageBiggerThan97++;
+                    if(cellContent[0].equals("H") || cellContent[0].equals("CH")){
+                        int hostDam = Integer.parseInt(cellContent[1]);
+                        if(hostDam<98){
+                            totalHostagesAliveDamageLessThan98++;
                         }
                         else{
-                            totalHostagesAliveNotCarriedWithDamageLessThan98++;
+                            if(hostDam<100)
+                                totalHostagesAliveDamageBiggerThan97++;
                         }
                     }
                 }
             }
         }
         if(!state.grid[state.neoLocationX][state.neoLocationY].split(",")[0].equals("P")){
-            totalReturn += totalHostagesAliveNotCarriedWithDamageBiggerThan97*20;
+            //if we are not currently standing on a pill then all hostages with
+            //damage bigger than 97 will DIE and neo will have to KILL them 
+            totalReturn += totalHostagesAliveDamageBiggerThan97*1100;
+            totalReturn += totalHostagesAliveDamageBiggerThan97*100;
         }
         else{
-            totalReturn += totalHostagesAliveNotCarriedWithDamageBiggerThan97*2;
+            //else we will just MOVE to then and CARRY them
+            totalReturn += totalHostagesAliveDamageBiggerThan97*2;
         }
-        totalReturn += totalHostagesAliveNotCarriedWithDamageLessThan98*2;
+        totalReturn += totalHostagesAliveDamageLessThan98*2;
+
+        //we will add 2; 1 for the movement to the TB and 1 for the DROP
+        totalReturn += 2;
+
         return totalReturn;
     }
 
