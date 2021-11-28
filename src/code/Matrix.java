@@ -23,7 +23,7 @@ public class Matrix extends GenericSearch {
         }
     }
 
-    public int PathCost(State state, State nextState) {
+    public int PathCost(State state, int depth) {
 
         //IMPORTANT NOTE:
         //note that we will prioritize deaths then kills then number of actions
@@ -32,13 +32,13 @@ public class Matrix extends GenericSearch {
         //we will add the cost to go from state to nextState, were state represents the parent's state
 
         //we will add one for each step taken
-        int stepCost = 1;
+        int stepCost = depth;
 
         //for each agent killed we will increase the cost by 100
-        stepCost += (nextState.agentsKilled - state.agentsKilled) * 100;
+        stepCost += (state.agentsKilled + state.agentHosatgesKilled) * 100;
 
         //for each hostage death we will increase the cost by 1100
-        stepCost += (nextState.hostagesDead - state.hostagesDead) * 1100;
+        stepCost += (state.hostagesDead - state.carriedHostagesDead) * 1100;
 
         //Death of hostages is the thing we want to avoid therfore we made it 10 times worse than the kill
         //the difference between the kill and death is 10 times that of the kill
@@ -56,7 +56,7 @@ public class Matrix extends GenericSearch {
         return stepCost;
     }
 
-    public int Heuristic1(State state) {
+    public int Heuristic3(State state) {
         String [][] grid=state.grid;
         int n=state.n;
         int m=state.m;
@@ -136,7 +136,7 @@ public class Matrix extends GenericSearch {
         return d+(dead*5);         
      }
 
-    public int Heuristic3(State state) {
+    public int Heuristic1(State state) {
         //for this heuristic function we are going to assume the best case where
         //all hostages are in one line, one after the other, where the first hostage is adjacent to neo
         //for each hostage we MOVE to it then CARRY 
@@ -534,8 +534,8 @@ public class Matrix extends GenericSearch {
     }
     
     public static void main(String[] args) throws Exception {
-        String grid = "5,5;3;1,3;4,0;0,1,3,2,4,3,2,4,0,4;3,4,3,0,4,2;1,4,1,2,1,2,1,4,0,3,1,0,1,0,0,3;4,4,45,3,3,12,0,2,88";
-        String BFSSol = solve(grid, "BF", false);
+        String grid = "5,5;1;0,4;4,4;0,3,1,4,2,1,3,0,4,1;4,0;2,4,3,4,3,4,2,4;0,2,98,1,2,98,2,2,98,3,2,98,4,2,98,2,0,1";
+        String BFSSol = solve(grid, "UC", true);
         System.out.print("Solution: ");
         System.out.println(BFSSol);
 

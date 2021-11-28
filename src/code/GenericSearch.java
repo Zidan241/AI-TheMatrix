@@ -12,7 +12,7 @@ public abstract class GenericSearch {
     }
     int nodesExpanded = 0;
     abstract boolean GoalTest(State currentState);
-    abstract int PathCost(State state, State nextState);
+    abstract int PathCost(State state , int depth);
     abstract int Heuristic1(State state);
     abstract int Heuristic2(State state);
     abstract State ApplyOperator(State state, String operator);
@@ -28,8 +28,8 @@ public abstract class GenericSearch {
                     //to calculate the path cost we sent the parent's state and the new node state to be able to
                     //calculate the number of deaths and kills that occured in this time step
                     previousStates.add(nextState.toString());
-                    int pathCost = node.pathCost + problem.PathCost(node.state, nextState);
                     int depth = node.depth + 1;
+                    int pathCost = problem.PathCost(nextState,depth);
                     SearchTreeNode child;
                     if(seatchStrategy.substring(0,2)=="GR"){
                         if(seatchStrategy.charAt(2)=='0'){
@@ -144,7 +144,12 @@ public abstract class GenericSearch {
         for(int i =0;i<nodes.size();i++){
             queue.add(0,nodes.get(i));
         } 
-        queue.sort(null);  
+        queue.sort(new Comparator<SearchTreeNode>() {
+            @Override
+            public int compare(SearchTreeNode o1, SearchTreeNode o2) {
+                return o1.pathCost - o2.pathCost;
+            }
+        });
     }
 
     public static void Greedy(LinkedList<SearchTreeNode> queue , ArrayList<SearchTreeNode> nodes){
