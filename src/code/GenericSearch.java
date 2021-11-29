@@ -31,25 +31,29 @@ public abstract class GenericSearch {
                     int depth = node.depth + 1;
                     int pathCost = problem.PathCost(nextState,depth);
                     SearchTreeNode child;
-                    if(seatchStrategy.substring(0,2)=="GR"){
+                    if(seatchStrategy.substring(0,2).equals("GR")){
                         if(seatchStrategy.charAt(2)=='0'){
-                            child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic1(problem.initialState));
+                            child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic1(nextState));
                         }else{
-                            child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic2(problem.initialState));
+                            child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic2(nextState));
                         }                   
                     }
                     else {
-                        if (seatchStrategy.substring(0,2)=="AS"){
+                        if (seatchStrategy.substring(0,2).equals("AS")){
                             if(seatchStrategy.charAt(2)=='0'){
-                                child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic1(problem.initialState));           
-                            }else{
-                                child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic2(problem.initialState));
+                                child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic1(nextState));           
+                            }
+                            else{
+                                child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic2(nextState));
                             }        
-                        }else{
+                        }
+                        else{
                             child = new SearchTreeNode(nextState, node, operator, depth, pathCost, 0);
                         }
                     }
+                   
                     children.add(child);
+
                 }
             }
         }
@@ -61,18 +65,20 @@ public abstract class GenericSearch {
         ArrayList<String> previousStates = new ArrayList<String>();
         SearchTreeNode initialNode;
         // intialize the search tree node with the root state's heurisitc or 0 if no heurisitic is needed 
-        if(seatchStrategy.substring(0,2)=="GR"){
+        if(seatchStrategy.substring(0,2).equals("GR")){
             if(seatchStrategy.charAt(2)=='0'){
                 initialNode = new SearchTreeNode(problem.initialState, null, null, 0, 0, problem.Heuristic1(problem.initialState));
-            }else{
+            }
+            else{
                 initialNode = new SearchTreeNode(problem.initialState, null, null, 0, 0, problem.Heuristic2(problem.initialState));
             }                   
         }
         else {
-            if (seatchStrategy.substring(0,2)=="AS"){
+            if (seatchStrategy.substring(0,2).equals("AS")){
                 if(seatchStrategy.charAt(2)=='0'){
                     initialNode = new SearchTreeNode(problem.initialState, null, null, 0, 0, problem.Heuristic1(problem.initialState));              
-                }else{
+                }
+                else{
                     initialNode = new SearchTreeNode(problem.initialState, null, null, 0, 0, problem.Heuristic2(problem.initialState));
                 }        
             }else{
@@ -118,7 +124,7 @@ public abstract class GenericSearch {
                         UCS(queue, Expand(seatchStrategy, problem, currentNode, previousStates));
                     break;
                     default:
-                    if(seatchStrategy.substring(0,2)=="GR"){
+                    if(seatchStrategy.substring(0,2).equals("GR")){
                         Greedy(queue, Expand(seatchStrategy, problem, currentNode, previousStates));                   
                     }
                     else {

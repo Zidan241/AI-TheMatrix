@@ -38,7 +38,7 @@ public class Matrix extends GenericSearch {
         stepCost += (state.agentsKilled + state.agentHosatgesKilled) * 100;
 
         //for each hostage death we will increase the cost by 1100
-        stepCost += (state.hostagesDead - state.carriedHostagesDead) * 1100;
+        stepCost += (state.hostagesDead) * 1100;
 
         //Death of hostages is the thing we want to avoid therfore we made it 10 times worse than the kill
         //the difference between the kill and death is 10 times that of the kill
@@ -119,31 +119,42 @@ public class Matrix extends GenericSearch {
         int n=state.n;
         int m=state.m;
         int dead= 0;
+        int pills=0;
+        //loop over grid to get no. of pills and then assume pills will be taken so we substract (# pills *20) from damage 
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(grid[i][j]!=null){
+                    String[] cellContent=grid[i][j].split(",");
+                    if(cellContent[0].equals("P")){
+                        pills++;
+                    }
+                }
+            }
+        }
         for(int i=0;i<n;i++){
             for(int j=0;j<m;j++){
                 if(grid[i][j]!=null){
                     String[] cellContent=grid[i][j].split(",");
                     if(cellContent[0].equals("H")){
-                    if(Math.abs(Integer.parseInt(cellContent[1])+(d*2))>=100){
+                    if(Math.abs(Integer.parseInt(cellContent[1])+(d*2)-(pills*20))>=100){
                         dead++;
+                        
                     }              
                     }
-        
                 }
             }
         }
-        
         return d+(dead*5);         
      }
 
     public int Heuristic1(State state) {
         //for this heuristic function we are going to assume the best case where
         //all hostages are in one line, one after the other, where the first hostage is adjacent to neo
-        //for each hostage we MOVE to it then CARRY 
+        //for each hostage we MOVE to it then CARRY
         int totalReturn = 0;
         int totalHostagesAliveDamageBiggerThan97 = 0;
         int totalHostagesAliveDamageLessThan98 = 0;
-        if(state.grid[state.neoLocationX][state.neoLocationY].split(",")[0].equals("H")){
+        if(state.grid[state.neoLocationX][state.neoLocationY]!= null && state.grid[state.neoLocationX][state.neoLocationY].split(",")[0].equals("H")){
             //if we are currently at a hostage then we will just CARRYTHEM
             // we know this hostage has damage less than 98 because else it would have been an illegal move
             totalReturn += 1;
@@ -165,7 +176,7 @@ public class Matrix extends GenericSearch {
                 }
             }
         }
-        if(!state.grid[state.neoLocationX][state.neoLocationY].split(",")[0].equals("P")){
+        if(state.grid[state.neoLocationX][state.neoLocationY]!=null && !state.grid[state.neoLocationX][state.neoLocationY].split(",")[0].equals("P")){
             //if we are not currently standing on a pill then all hostages with
             //damage bigger than 97 will DIE and neo will have to KILL them 
             totalReturn += totalHostagesAliveDamageBiggerThan97*1100;
@@ -179,7 +190,6 @@ public class Matrix extends GenericSearch {
 
         //we will add 2; 1 for the movement to the TB and 1 for the DROP
         totalReturn += 2;
-
         return totalReturn;
     }
 
@@ -297,8 +307,8 @@ public class Matrix extends GenericSearch {
     public static String genGrid() {
 
         Random rand = new Random();
-        int M = rand.nextInt((15 - 5) + 1) + 5;
-        int N = rand.nextInt((15 - 5) + 1) + 5;
+        int M = 15;
+        int N = 15;
         boolean[][] gridArray = new boolean[M][N];
         int C = rand.nextInt((4 - 1) + 1) + 1;
         int NeoX = rand.nextInt((M - 1) + 1);
@@ -327,7 +337,7 @@ public class Matrix extends GenericSearch {
                 break;
             }
         }
-        int Hostages = rand.nextInt((10 - 3) + 1) + 3;
+        int Hostages = 10;
         int Pills = rand.nextInt(Hostages) + 1;
         AvailableGridCells -= Hostages;
         AvailableGridCells -= Pills - 1;
@@ -441,6 +451,7 @@ public class Matrix extends GenericSearch {
     public static String solve(String grid, String strategy, boolean visualize){
         // decoding grid string
         String[] GridSplit=grid.split(";");
+        System.out.println(strategy);
         // String[] length = GridSplit[0].split(",");
         int m =Integer.parseInt((GridSplit[0].split(","))[0]);
         int n =Integer.parseInt(GridSplit[0].split(",")[1]);
@@ -502,6 +513,7 @@ public class Matrix extends GenericSearch {
             SearchTreeNode tempNode=solution;
             plan += tempNode.operator;
             states.add(tempNode.state);
+            int actualCost=solution.pathCost;
             if(tempNode.parentNode!=null){
                 tempNode=tempNode.parentNode;
                 while(true){
@@ -513,6 +525,8 @@ public class Matrix extends GenericSearch {
                         states.add(0,tempNode.state);
                         plan=tempNode.operator+","+plan;
                         tempNode=tempNode.parentNode;
+                        if(tempNode.heuristic>actualCost)
+                            System.out.println("Overestimate");
                     }
                 }
             }
@@ -534,11 +548,58 @@ public class Matrix extends GenericSearch {
     }
     
     public static void main(String[] args) throws Exception {
-        String grid = "5,5;1;0,4;4,4;0,3,1,4,2,1,3,0,4,1;4,0;2,4,3,4,3,4,2,4;0,2,98,1,2,98,2,2,98,3,2,98,4,2,98,2,0,1";
-        String BFSSol = solve(grid, "UC", true);
-        System.out.print("Solution: ");
-        System.out.println(BFSSol);
+        String grid = genGrid();
+        String Greedy0 = solve(grid, "GR0", false);
+        String Greedy1 = solve(grid, "GR1", false);
+        String UC = solve(grid, "UC", false);
+        String AS0 =solve(grid, "AS0", false);
+        String AS1 =solve(grid, "AS1", false);
+        String DF = solve(grid, "DF", false);
+        String BF= solve(grid, "BF", false);
 
+        System.out.println("Initial Grid");
+        System.out.println(grid);
+        System.out.println("===================================");
+        System.out.println();
+  
+        System.out.print("Solution: GR0");
+        System.out.println(Greedy0);
+
+        System.out.println("===================================");
+        System.out.println();
+  
+        System.out.print("Solution: GR1");
+        System.out.println(Greedy1);
+
+        System.out.println("===================================");
+        System.out.println();
+  
+        System.out.print("Solution: UC");
+        System.out.println(UC);
+
+        System.out.println("===================================");
+        System.out.println();
+  
+        System.out.print("Solution: AS0");
+        System.out.println(AS0);
+
+        System.out.println("===================================");
+        System.out.println();
+  
+        System.out.print("Solution: AS1");
+        System.out.println(AS1);
+
+        System.out.println("===================================");
+        System.out.println();
+  
+        System.out.print("Solution: BF");
+        System.out.println(BF);
+
+        System.out.println("===================================");
+        System.out.println();
+  
+        System.out.print("Solution: DF");
+        System.out.println(DF);
     }
 }
 
