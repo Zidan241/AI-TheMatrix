@@ -1,6 +1,7 @@
 package code;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 public abstract class GenericSearch {
@@ -17,7 +18,7 @@ public abstract class GenericSearch {
     abstract int Heuristic2(State state);
     abstract State ApplyOperator(State state, String operator);
 
-    public static ArrayList<SearchTreeNode> Expand(String seatchStrategy, GenericSearch problem, SearchTreeNode node, ArrayList<String> previousStates){
+    public static ArrayList<SearchTreeNode> Expand(String seatchStrategy, GenericSearch problem, SearchTreeNode node, HashSet<String> previousStates){
         ArrayList<SearchTreeNode> children = new ArrayList<SearchTreeNode>();
         for(int i = 0; i < problem.operators.length; i++){
             String operator = problem.operators[i];
@@ -62,7 +63,7 @@ public abstract class GenericSearch {
 
     public static SearchTreeNode GenericSearchProcedure(GenericSearch problem, String seatchStrategy){
         LinkedList<SearchTreeNode> queue = new LinkedList<SearchTreeNode>();
-        ArrayList<String> previousStates = new ArrayList<String>();
+        HashSet<String> previousStates = new HashSet<String>();
         SearchTreeNode initialNode;
         // intialize the search tree node with the root state's heurisitc or 0 if no heurisitic is needed 
         if(seatchStrategy.substring(0,2).equals("GR")){
@@ -93,7 +94,7 @@ public abstract class GenericSearch {
                 if(seatchStrategy.equals("ID")){
                     depth++;
                     queue.add(initialNode);
-                    previousStates.clear();
+                    previousStates.clear();;
                 }
                 else{
                     return null;
