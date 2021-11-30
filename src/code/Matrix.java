@@ -1,7 +1,9 @@
 package code;
 import java.util.Random;
 import java.util.ArrayList;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
 public class Matrix extends GenericSearch {
     public Matrix(String[] operators, State initialState) {
         super(operators, initialState);
@@ -548,58 +550,73 @@ public class Matrix extends GenericSearch {
     }
     
     public static void main(String[] args) throws Exception {
-        String grid = genGrid();
-        String Greedy0 = solve(grid, "GR0", false);
-        String Greedy1 = solve(grid, "GR1", false);
-        String UC = solve(grid, "UC", false);
-        String AS0 =solve(grid, "AS0", false);
-        String AS1 =solve(grid, "AS1", false);
-        String DF = solve(grid, "DF", false);
-        String BF= solve(grid, "BF", false);
-
-        System.out.println("Initial Grid");
-        System.out.println(grid);
-        System.out.println("===================================");
-        System.out.println();
-  
-        System.out.print("Solution: GR0");
-        System.out.println(Greedy0);
-
-        System.out.println("===================================");
-        System.out.println();
-  
-        System.out.print("Solution: GR1");
-        System.out.println(Greedy1);
-
-        System.out.println("===================================");
-        System.out.println();
-  
-        System.out.print("Solution: UC");
-        System.out.println(UC);
-
-        System.out.println("===================================");
-        System.out.println();
-  
-        System.out.print("Solution: AS0");
-        System.out.println(AS0);
-
-        System.out.println("===================================");
-        System.out.println();
-  
-        System.out.print("Solution: AS1");
-        System.out.println(AS1);
-
-        System.out.println("===================================");
-        System.out.println();
-  
-        System.out.print("Solution: BF");
-        System.out.println(BF);
-
-        System.out.println("===================================");
-        System.out.println();
-  
-        System.out.print("Solution: DF");
-        System.out.println(DF);
+        try{
+            String grid = genGrid();
+            //String grid ="5,5;4;1,1;4,1;2,4,0,4,3,2,3,0,4,2,0,1,1,3,2,1;4,0,4,4,1,0;2,0,0,2,0,2,2,0;0,0,62,4,3,45,3,3,39,2,3,40";
+            String DF = solve(grid, "DF", false);
+            String BF= solve(grid, "BF", false);
+            String Greedy0 = solve(grid, "GR0", false);
+            String Greedy1 = solve(grid, "GR1", false);
+            String UC = solve(grid, "UC", false);
+            String AS0 =solve(grid, "AS0", false);
+            String AS1 =solve(grid, "AS1", false);
+            String text="";
+            text +="Initial Grid";
+            text +="\n";
+            text +=grid;
+            text +="\n";
+            text +="===================================";
+            text +="\n";
+            text +="Solution: GR0";
+            text += "\n";
+            text += Greedy0;
+            text +="\n";
+            text +="===================================";
+            text +="\n";
+            text +="Solution: GR1";
+            text += "\n";
+            text += Greedy1;
+            text +="\n";
+            text +="===================================";
+            text +="\n";
+            text +="Solution: UC";
+            text += "\n";
+            text += UC;
+            text +="\n";
+            text +="===================================";
+            text +="\n";
+            text +="Solution: AS0";
+            text += "\n";
+            text += AS0;
+            text +="\n";
+            text +="===================================";
+            text +="\n";
+            text +="Solution: AS1";
+            text += "\n";
+            text += AS1;
+            text +="\n";
+            text +="===================================";
+            text +="\n";
+            text +="Solution: DF";
+            text += "\n";
+            text += DF;
+            text +="\n";
+            text +="===================================";
+            text +="\n";
+            text +="Solution: BF";
+            text += "\n";
+            text += BF;
+            text +="\n";
+            text +="===================================";
+            FileWriter myWriter = new FileWriter("Project1.txt");
+            myWriter.write(text);
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+        }
+        catch(Exception e){
+            System.out.println("Error");
+        }
+        
     }
 }
 
