@@ -2,6 +2,8 @@ package code;
 import java.util.Random;
 import java.util.ArrayList;
 import java.io.*;
+import com.sun.management.OperatingSystemMXBean;
+import java.lang.management.ManagementFactory;
 public class Matrix extends GenericSearch {
     public Matrix(String[] operators, State initialState) {
         super(operators, initialState);
@@ -344,8 +346,8 @@ public class Matrix extends GenericSearch {
     public static String genGrid() {
 
         Random rand = new Random();
-        int M = 10;
-        int N = 10;
+        int M = 5;
+        int N = 5;
         boolean[][] gridArray = new boolean[M][N];
         int C = rand.nextInt((4 - 1) + 1) + 1;
         int NeoX = rand.nextInt((M - 1) + 1);
@@ -374,7 +376,7 @@ public class Matrix extends GenericSearch {
                 break;
             }
         }
-        int Hostages = 8;
+        int Hostages = 6;
         int Pills = rand.nextInt(Hostages) + 1;
         AvailableGridCells -= Hostages;
         AvailableGridCells -= Pills - 1;
@@ -586,15 +588,17 @@ public class Matrix extends GenericSearch {
     
     public static void main(String[] args) throws Exception {
         try{
-            String grid = genGrid();
-            //String grid ="5,5;4;1,1;4,1;2,4,0,4,3,2,3,0,4,2,0,1,1,3,2,1;4,0,4,4,1,0;2,0,0,2,0,2,2,0;0,0,62,4,3,45,3,3,39,2,3,40";
-            String BF= solve(grid, "BF", false);
-            String DF = solve(grid, "DF", false);
+            //String grid = genGrid();
+            String grid ="5,5;2;1,2;2,2;2,0,3,3;4,2,0,4,0,1,3,1,0,3,1,0;2,4,3,0,2,3,3,0;4,0,47,3,2,79,4,4,28,3,4,88,1,3,59,1,4,89";
+            System.out.println(grid);
+            String strategy="AS1";
+            String BF= solve(grid, strategy, true);
+    /*         String DF = solve(grid, "DF", false);
             String Greedy0 = solve(grid, "GR0", false);
             String Greedy1 = solve(grid, "GR1", false);
             String UC = solve(grid, "UC", false);
             String AS0 =solve(grid, "AS0", false);
-            String AS1 =solve(grid, "AS1", false);
+            String AS1 =solve(grid, "AS1", false); */
             String text="";
             text +="Initial Grid";
             text +="\n";
@@ -602,7 +606,7 @@ public class Matrix extends GenericSearch {
             text +="\n";
             text +="===================================";
             text +="\n";
-            text +="Solution: GR0";
+          /*   text +="Solution: GR0";
             text += "\n";
             text += Greedy0;
             text +="\n";
@@ -637,13 +641,13 @@ public class Matrix extends GenericSearch {
             text += DF;
             text +="\n";
             text +="===================================";
-            text +="\n";
-            text +="Solution: BF";
+            text +="\n"; */
+            text +="Solution: "+strategy;
             text += "\n";
             text += BF;
             text +="\n";
             text +="===================================";
-            FileWriter myWriter = new FileWriter("Project1.txt");
+            FileWriter myWriter = new FileWriter("EX2_"+strategy+".txt");
             myWriter.write(text);
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
