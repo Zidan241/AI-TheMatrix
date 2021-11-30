@@ -56,7 +56,7 @@ public class Matrix extends GenericSearch {
         return stepCost;
     }
 
-    public int Heuristic3(State state) {
+    public int Heuristic3Nada(State state) {
         String [][] grid=state.grid;
         int n=state.n;
         int m=state.m;
@@ -109,7 +109,7 @@ public class Matrix extends GenericSearch {
         return minMoves*hostagesToSave;
     }
 
-    public int Heuristic2(State state) {
+    public int Heuristic2Farah(State state) {
         //calculate manhattan distance to telephone booth 
         //calculate number of hostages that will die while on my way to telephone booth  
         //add number of dead hostages to manhattan distance calculated
@@ -147,7 +147,7 @@ public class Matrix extends GenericSearch {
         return d+(dead*5);         
      }
 
-    public int Heuristic1(State state) {
+    public int Heuristic1Jimmy(State state) {
         //for this heuristic function we are going to assume the best case where
         //all hostages are in one line, one after the other, where the first hostage is adjacent to neo
         //for each hostage we MOVE to it then CARRY
@@ -194,10 +194,40 @@ public class Matrix extends GenericSearch {
     }
 
 
-    public int Heuristic4(State state){
-        int aliveHostages=state.totalHostages-state.hostagesDead;
-        int agentHostagesNotYetKilled=state.totalHostages-(aliveHostages+ state.agentHosatgesKilled);
-        return aliveHostages + (agentHostagesNotYetKilled*100);
+    public int Heuristic2(State state){
+        //agent hostages not yet killed
+        int agentHostagesNotYetKilled=state.hostagesDead-state.carriedHostagesDead-state.agentHosatgesKilled;
+        //carried hostages + hostages
+        int nonAgentHostages=state.totalHostages-agentHostagesNotYetKilled-state.agentHosatgesKilled;        
+        return nonAgentHostages + (agentHostagesNotYetKilled*100);
+    }
+
+    public int Heuristic1(State state){
+        //agent hostages not yet killed
+        int agentHostagesNotYetKilled=state.hostagesDead-state.carriedHostagesDead-state.agentHosatgesKilled;
+        //carried hostages + hostages
+        int nonAgentHostages=state.totalHostages-agentHostagesNotYetKilled-state.agentHosatgesKilled;
+        
+        // if not in pill cell then get those that will die after 1 step
+        int hostagesWillDie=0;
+        if(state.grid[state.neoLocationX][state.neoLocationY]!=null && !state.grid[state.neoLocationX][state.neoLocationY].split(",")[0].equals("P")){
+            for(int i=0; i<state.grid.length; i++){
+                for(int j=0; j<state.grid[i].length; j++){
+                    if(state.grid[i][j]!=null){
+                        String [] cellContent = state.grid[i][j].split(",");
+                        if(cellContent[0].equals("H") || cellContent[0].equals("CH")){
+                            int hostDam = Integer.parseInt(cellContent[1]);
+                            if(hostDam+2>=100){
+                                hostagesWillDie+=1;
+                            }
+                        }
+                    }
+                }
+            }              
+        }
+        
+        // cost =carried hostages and hostages + hostages that will die * 1100        
+        return nonAgentHostages + (hostagesWillDie*1100);
     }
     
     public State ApplyOperator(State state, String operator) {
@@ -458,7 +488,7 @@ public class Matrix extends GenericSearch {
     public static String solve(String grid, String strategy, boolean visualize){
         // decoding grid string
         String[] GridSplit=grid.split(";");
-        System.out.println(strategy);
+        //System.out.println(strategy);
         // String[] length = GridSplit[0].split(",");
         int m =Integer.parseInt((GridSplit[0].split(","))[0]);
         int n =Integer.parseInt(GridSplit[0].split(",")[1]);
