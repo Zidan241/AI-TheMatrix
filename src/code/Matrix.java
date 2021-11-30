@@ -344,8 +344,8 @@ public class Matrix extends GenericSearch {
     public static String genGrid() {
 
         Random rand = new Random();
-        int M = 5;
-        int N = 5;
+        int M = rand.nextInt((15 - 5) + 1) + 5;
+        int N = rand.nextInt((15 - 5) + 1) + 5;
         boolean[][] gridArray = new boolean[M][N];
         int C = rand.nextInt((4 - 1) + 1) + 1;
         int NeoX = rand.nextInt((M - 1) + 1);
@@ -374,7 +374,7 @@ public class Matrix extends GenericSearch {
                 break;
             }
         }
-        int Hostages = 6;
+        int Hostages =rand.nextInt((10 - 3) + 1) + 3;
         int Pills = rand.nextInt(Hostages) + 1;
         AvailableGridCells -= Hostages;
         AvailableGridCells -= Pills - 1;
