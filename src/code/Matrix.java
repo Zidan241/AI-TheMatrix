@@ -2,8 +2,6 @@ package code;
 import java.util.Random;
 import java.util.ArrayList;
 import java.io.*;
-import com.sun.management.OperatingSystemMXBean;
-import java.lang.management.ManagementFactory;
 public class Matrix extends GenericSearch {
     public Matrix(String[] operators, State initialState) {
         super(operators, initialState);
