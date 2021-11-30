@@ -307,8 +307,8 @@ public class Matrix extends GenericSearch {
     public static String genGrid() {
 
         Random rand = new Random();
-        int M = 15;
-        int N = 15;
+        int M = rand.nextInt((15 - 5) + 5);
+        int N = rand.nextInt((15 - 5) + 5);
         boolean[][] gridArray = new boolean[M][N];
         int C = rand.nextInt((4 - 1) + 1) + 1;
         int NeoX = rand.nextInt((M - 1) + 1);
@@ -337,7 +337,7 @@ public class Matrix extends GenericSearch {
                 break;
             }
         }
-        int Hostages = 10;
+        int Hostages = rand.nextInt((10 - 3) + 1) + 3;
         int Pills = rand.nextInt(Hostages) + 1;
         AvailableGridCells -= Hostages;
         AvailableGridCells -= Pills - 1;
@@ -549,11 +549,11 @@ public class Matrix extends GenericSearch {
     
     public static void main(String[] args) throws Exception {
         String grid = genGrid();
-        String Greedy0 = solve(grid, "GR0", false);
-        String Greedy1 = solve(grid, "GR1", false);
+        String Greedy0 = solve(grid, "GR1", false);
+        String Greedy1 = solve(grid, "GR2", false);
         String UC = solve(grid, "UC", false);
-        String AS0 =solve(grid, "AS0", false);
-        String AS1 =solve(grid, "AS1", false);
+        String AS0 =solve(grid, "AS1", false);
+        String AS1 =solve(grid, "AS2", false);
         String DF = solve(grid, "DF", false);
         String BF= solve(grid, "BF", false);
 
@@ -562,13 +562,13 @@ public class Matrix extends GenericSearch {
         System.out.println("===================================");
         System.out.println();
   
-        System.out.print("Solution: GR0");
+        System.out.print("Solution: GR1");
         System.out.println(Greedy0);
 
         System.out.println("===================================");
         System.out.println();
   
-        System.out.print("Solution: GR1");
+        System.out.print("Solution: GR2");
         System.out.println(Greedy1);
 
         System.out.println("===================================");

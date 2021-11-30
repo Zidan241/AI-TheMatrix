@@ -33,7 +33,7 @@ public abstract class GenericSearch {
                     int pathCost = problem.PathCost(nextState,depth);
                     SearchTreeNode child;
                     if(seatchStrategy.substring(0,2).equals("GR")){
-                        if(seatchStrategy.charAt(2)=='0'){
+                        if(seatchStrategy.charAt(2)=='1'){
                             child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic1(nextState));
                         }else{
                             child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic2(nextState));
@@ -41,7 +41,7 @@ public abstract class GenericSearch {
                     }
                     else {
                         if (seatchStrategy.substring(0,2).equals("AS")){
-                            if(seatchStrategy.charAt(2)=='0'){
+                            if(seatchStrategy.charAt(2)=='1'){
                                 child = new SearchTreeNode(nextState, node, operator, depth, pathCost, problem.Heuristic1(nextState));           
                             }
                             else{
@@ -67,7 +67,7 @@ public abstract class GenericSearch {
         SearchTreeNode initialNode;
         // intialize the search tree node with the root state's heurisitc or 0 if no heurisitic is needed 
         if(seatchStrategy.substring(0,2).equals("GR")){
-            if(seatchStrategy.charAt(2)=='0'){
+            if(seatchStrategy.charAt(2)=='1'){
                 initialNode = new SearchTreeNode(problem.initialState, null, null, 0, 0, problem.Heuristic1(problem.initialState));
             }
             else{
@@ -76,7 +76,7 @@ public abstract class GenericSearch {
         }
         else {
             if (seatchStrategy.substring(0,2).equals("AS")){
-                if(seatchStrategy.charAt(2)=='0'){
+                if(seatchStrategy.charAt(2)=='1'){
                     initialNode = new SearchTreeNode(problem.initialState, null, null, 0, 0, problem.Heuristic1(problem.initialState));              
                 }
                 else{
